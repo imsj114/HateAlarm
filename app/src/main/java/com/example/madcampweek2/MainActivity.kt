@@ -13,7 +13,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+public class MainActivity : AppCompatActivity() {
 
     val READ_CONTACTS_PERMISSON = 1
 
