@@ -32,7 +32,7 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src/main/res', 'src/main/res/animator'
+                srcDirs 'src/main/res', 'src/main/res/anim', 'src/main/res/font'
             }
         }
     }

@@ -12,16 +12,19 @@
     android:gravity="center"
     tools:context=".SplashActivity"
     android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="@drawable/splash_back_circle">
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="center_horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:id="@+id/splash_text"-->
-<!--        android:text="logotext"-->
-<!--        android:textSize="36sp"/>-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="108dp"
+        android:gravity="center"
+        android:id="@+id/splash_text"
+        android:text="@string/splash_text"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/flowerroad"
+        android:textSize="44sp"/>
 
     <ImageView
         android:layout_width="60dp"

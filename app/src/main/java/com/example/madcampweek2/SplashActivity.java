@@ -8,7 +8,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class SplashActivity extends Activity {
-
     ImageView imageView;            // Logo ImageView
     Animation imageAni;
 
