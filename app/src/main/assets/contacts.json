@@ -1,0 +1,39 @@
+{
+  "Contacts": [
+    {
+      "NAME": "Ryan",
+      "PHONE": "010-1111-2222",
+      "PROFILE": "ryan"
+    },
+    {
+      "NAME": "Neo",
+      "PHONE": "010-1111-3333",
+      "PROFILE": "neo"
+    },
+    {
+      "NAME": "Apeach",
+      "PHONE": "010-1111-5533",
+      "PROFILE": "apeach"
+    },
+    {
+      "NAME": "Frodo",
+      "PHONE": "010-1123-5555",
+      "PROFILE": "frodo"
+    },
+    {
+      "NAME": "Scappy",
+      "PHONE": "010-4555-9999",
+      "PROFILE": "scappy"
+    },
+    {
+      "NAME": "Jordy",
+      "PHONE": "010-2929-5959",
+      "PROFILE": "jordy"
+    },
+    {
+      "NAME": "Angmond",
+      "PHONE": "010-3939-5959",
+      "PROFILE": "angmond"
+    }
+  ]
+}

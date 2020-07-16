@@ -31,7 +31,6 @@ public class ContactFragment extends Fragment {
         final androidx.recyclerview.widget.RecyclerView ContactView =
                 root.findViewById(R.id.recyclerview_contacts);
 
-
         // RecyclerView setting
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         ContactView.setLayoutManager(linearLayoutManager);
@@ -41,7 +40,7 @@ public class ContactFragment extends Fragment {
 
         // Recycler adapter contact data setting
         setJSONcontacts(adapter, "contacts.json");  // Load contact data from contacts.json
-        setDeviceContacts(adapter);     // Load the user's contact list
+        //setDeviceContacts(adapter);     // Load the user's contact list
         adapter.notifyDataSetChanged(); // Notify the adapter data modification
 
         return root;
