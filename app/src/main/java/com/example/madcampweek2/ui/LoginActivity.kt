@@ -1,24 +1,18 @@
 package com.example.madcampweek2.ui
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.madcampweek2.MainActivity
 import com.example.madcampweek2.R
 import com.facebook.*
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
-import org.json.JSONObject
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
-
-const val TAG = "TAG"
 
 class LoginActivity : AppCompatActivity() {
+    private val TAG = "TAG"
     private lateinit var callbackManager : CallbackManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +30,8 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "(button) onSuccess")
                 Log.d(TAG, AccessToken.getCurrentAccessToken().toString())
                 Log.d(TAG, Profile.getCurrentProfile()?.toString() ?: "none")
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
             }
             override fun onCancel() {
                 // App code

@@ -7,6 +7,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.madcampweek2.ui.LoginActivity;
+import com.facebook.AccessToken;
+
 public class SplashActivity extends Activity {
     ImageView imageView;            // Logo ImageView
     Animation imageAni;
@@ -25,7 +28,13 @@ public class SplashActivity extends Activity {
             public void onAnimationStart(Animation animation) { }
             @Override
             public void onAnimationEnd(Animation animation) {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+                if(isLoggedIn){
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                }else{
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }
                 finish();
             }
             @Override
