@@ -1,9 +1,11 @@
 package com.example.madcampweek2
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -11,11 +13,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.madcampweek2.ui.MainViewModel
+import com.example.madcampweek2.model.Contact
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-public class MainActivity : AppCompatActivity() {
+public class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    val READ_CONTACTS_PERMISSON = 1
+    private val READ_CONTACTS_PERMISSON = 1
+    val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,9 @@ public class MainActivity : AppCompatActivity() {
                 R.id.navigation_contact, R.id.navigation_dashboard, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val button = findViewById<Button>(R.id.button_test)
+        button.setOnClickListener(this)
 
         //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
 
@@ -65,5 +73,12 @@ public class MainActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    override fun onClick(p0: View?) {
+        viewModel._contacts.value = listOf(
+            Contact(),
+            Contact()
+        )
     }
 }

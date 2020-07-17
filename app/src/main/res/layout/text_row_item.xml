@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
     <FrameLayout android:gravity="center_vertical"
 
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="this is a text in a text row"
-        android:id="@+id/text_item"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
