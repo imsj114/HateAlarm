@@ -10,9 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.madcampweek2.R;
+import com.example.madcampweek2.ui.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
@@ -60,6 +64,18 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         adapter.notifyDataSetChanged(); // Notify the adapter data modification
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        model.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
+            @Override
+            public void onChanged(List<Contact> contacts) {
+                adapter.setData(contacts);
+            }
+        });
     }
 
     @Override

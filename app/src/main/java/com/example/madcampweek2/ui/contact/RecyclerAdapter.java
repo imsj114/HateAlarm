@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.madcampweek2.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
     // Data(Contact class) list for adapter
-    private ArrayList<Contact> listData = new ArrayList<>();
+    private List<Contact> listData = new ArrayList<>();
 
     @NonNull
     @Override
@@ -42,6 +43,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     void addItem(Contact data) {
         listData.add(data);
+    }
+
+    void setData(List<Contact> newData){
+        listData = newData;
+        notifyDataSetChanged();
     }
 
     // ViewHolder of RecyclerView
