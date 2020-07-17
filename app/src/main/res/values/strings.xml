@@ -6,4 +6,5 @@
     <string name="title_gallery">Gallery</string>
     <string name="title_notifications">Notifications</string>
     <string name="facebook_app_id">305810097272562</string> <string name="fb_login_protocol_scheme">fb305810097272562</string>
+    <string name="title_map">Map</string>
 </resources>

@@ -20,5 +20,9 @@
         android:id="@+id/navigation_gallery"
         android:icon="@drawable/ic_baseline_image_24"
         android:title="@string/title_gallery" />
+    <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_baseline_image_24"
+        android:title="@string/title_map" />
 
 </menu>
