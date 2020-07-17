@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampweek2.R;
+import com.example.madcampweek2.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;

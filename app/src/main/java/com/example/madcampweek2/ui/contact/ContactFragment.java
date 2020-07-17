@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.madcampweek2.R;
+import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.ui.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

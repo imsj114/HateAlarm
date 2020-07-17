@@ -1,4 +1,4 @@
-package com.example.madcampweek2.ui.contact;
+package com.example.madcampweek2.model;
 
 public class Contact {
     private String phoneNumber;

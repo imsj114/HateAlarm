@@ -1,6 +1,5 @@
 package com.example.madcampweek2
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -14,8 +13,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.madcampweek2.model.User
 import com.example.madcampweek2.ui.MainViewModel
+import com.example.madcampweek2.model.Contact
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 public class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -77,6 +76,9 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        viewModel._users.value = listOf(User())
+        viewModel._contacts.value = listOf(
+            Contact(),
+            Contact()
+        )
     }
 }

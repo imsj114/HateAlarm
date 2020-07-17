@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import com.example.madcampweek2.model.Contact;
+
 import java.util.ArrayList;
 
 // Load contacts from the device and return Contact list
