@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/navigation_gallery"
-        android:name="com.example.madcampweek2.ui.gallery.RecyclerViewFragment"
+        android:name="com.example.madcampweek2.ui.gallery.GalleryFragment"
         android:label="@string/title_gallery"
         tools:layout="@layout/recycler_view_frag" />
 </navigation>
