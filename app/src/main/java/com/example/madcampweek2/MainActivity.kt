@@ -77,8 +77,16 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         viewModel._contacts.value = listOf(
-            Contact(),
-            Contact()
+            Contact().apply{
+                name = "Ryan"
+                phoneNumber = "010-1234-5678"
+                profile = R.drawable.ryan
+            },
+            Contact().apply{
+                name = "Apeach"
+                phoneNumber = "010-5678-1234"
+                profile = R.drawable.apeach
+            }
         )
     }
 }

@@ -24,4 +24,6 @@ public class Contact {
     public int getProfile()  { return profile; }
 
     public void setProfile(int profile)  { this.profile = profile; }
+
+    public Image toImage() { return new Image(profile); }
 }
