@@ -29,7 +29,7 @@
         tools:layout="@layout/recycler_view_frag" />
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.madcampweek2.MapsFragment"
+        android:name="com.example.madcampweek2.ui.maps.MapsFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_maps"/>
 </navigation>
