@@ -1,11 +1,14 @@
 package com.example.madcampweek2.ui.maps
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +42,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
     private var mLastKnownLocation : Location? = null
     private val mDefaultLocation = LatLng(-3.0, 151.0)
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+    private var gpsService: TrackingService? = null
 
     private val callback = OnMapReadyCallback { map ->
         mMap = map
@@ -53,7 +57,13 @@ class MapsFragment : Fragment() , View.OnClickListener{
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_maps, container, false)
         val fab = view.findViewById<FloatingActionButton>(R.id.fab_map)
+        val fab2 = view.findViewById<FloatingActionButton>(R.id.fab_map2)
         fab.setOnClickListener(this)
+        fab2.setOnClickListener(this)
+
+        val intent = Intent(context, TrackingService::class.java)
+        ContextCompat.startForegroundService(requireContext(), intent)
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 
         return view
     }
@@ -70,20 +80,41 @@ class MapsFragment : Fragment() , View.OnClickListener{
     }
 
     override fun onClick(p0: View?) {
-        Log.d(TAG, "onClick")
-        if(!isTrackingMode){
-            isTrackingMode = true
-            val intent = Intent(context, TrackingService::class.java)
-            if (Build.VERSION.SDK_INT >= 26) {
-                Log.d(TAG, "startForegroundService")
-                requireContext().startForegroundService(intent)
-            } else {
-                requireContext().startService(intent)
+
+        when(p0?.id){
+            R.id.fab_map -> {
+                if(!isTrackingMode){
+                    isTrackingMode = true
+                    Log.i(TAG, "start tracking")
+                    gpsService!!.startTracking()
+                    //TrackingService.startService(requireContext(), "Foreground service now running..")
+                }else{
+                    isTrackingMode = false
+                    Log.i(TAG, "stop tracking")
+                    gpsService!!.stopTracking()
+                }
             }
-        }else{
-            isTrackingMode = false
-            val intent = Intent(context, TrackingService::class.java)
-            context!!.stopService(intent)
+            R.id.fab_map2 -> {
+
+            }
+        }
+
+    }
+
+    private val serviceConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val name: String = className.className
+            if (name.endsWith("TrackingService")) {
+                Log.i(TAG, "onServiceConnected")
+                gpsService = (service as TrackingService.LocationServiceBinder).getService()
+                Log.i(TAG, ">> (Fragment) $gpsService")
+            }
+        }
+
+        override fun onServiceDisconnected(className: ComponentName) {
+            if (className.className == "TrackingService") {
+                gpsService = null
+            }
         }
     }
 
