@@ -1,19 +1,29 @@
 package com.example.madcampweek2.ui.dashboard;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.api.RetroApi;
+import com.example.madcampweek2.model.User;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
 
 public class DashboardFragment extends Fragment {
     String BASE_URL = "https://jsonplaceholder.typicode.com/";
@@ -32,27 +42,27 @@ public class DashboardFragment extends Fragment {
 
         RetroApi retroApi = retrofit.create(RetroApi.class);
 
-//        Call<List<User>> call = retroApi.getUsers();
-//
-//        call.enqueue(new Callback<List<User>>() {
-//            @Override
-//            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-//                if(response.isSuccessful()){
-//                    <List<User>> result = response.body();
-//                    Toast.makeText(getActivity(),"성공, 결과 \n" + result.toString(), Toast.LENGTH_LONG ).show();
-//                    Log.d(TAG, "getUsers 성공, 결과 \n" + result.toString());
-//                } else{
-//                    Toast.makeText(getActivity(),"getUsers 실패", Toast.LENGTH_LONG ).show();
-//                    Log.d(TAG, "실패");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<User>> call, Throwable t) {
-//                Toast.makeText(getActivity(),"실패", Toast.LENGTH_LONG ).show();
-//                Log.d(TAG, "실패:"+t.getMessage());
-//            }
-//        });
+        Call<List<User>> call = retroApi.getUsers();
+
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if(response.isSuccessful()){
+                    List<User> result = response.body();
+                    Toast.makeText(getActivity(),"성공, 결과 \n" + result.toString(), Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "getUsers 성공, 결과 \n" + result.toString());
+                } else{
+                    Toast.makeText(getActivity(),"getUsers 실패", Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "실패");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getActivity(),"실패", Toast.LENGTH_LONG ).show();
+                Log.d(TAG, "실패:"+t.getMessage());
+            }
+        });
 
 
         return root;

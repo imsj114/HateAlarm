@@ -17,7 +17,7 @@ import com.example.madcampweek2.ui.MainViewModel
 import com.example.madcampweek2.model.Contact
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-public class MainActivity : AppCompatActivity(), View.OnClickListener {
+public class MainActivity : AppCompatActivity(){
 
     private val READ_CONTACTS_PERMISSON = 1
     val viewModel : MainViewModel by viewModels()
