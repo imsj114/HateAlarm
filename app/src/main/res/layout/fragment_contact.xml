@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFF3F3F4"
-    android:paddingBottom="64dp"
     app:layout_constraintTop_toTopOf="@+id/container"
     tools:context=".ui.contact.ContactFragment">
 
@@ -40,7 +39,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="16dp"
         android:backgroundTint="#ffffff"
-        android:src="@drawable/ic_baseline_data_usage_24"
+        android:src="@drawable/ic_baseline_create_24"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:fabSize="normal" />

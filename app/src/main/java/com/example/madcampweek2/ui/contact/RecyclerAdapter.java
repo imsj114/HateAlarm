@@ -70,7 +70,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         void onBind(Contact data) {
             textView1.setText(data.getName());
             textView2.setText(data.getPhoneNumber());
-            imageView.setImageResource(data.getProfile());
+//            imageView.setImageResource(data.getProfile());
         }
     }
 }

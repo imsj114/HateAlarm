@@ -61,7 +61,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         // Recycler adapter contact data setting
         setJSONcontacts(adapter, "contacts.json");  // Load contact data from contacts.json
-        //setDeviceContacts(adapter);     // Load the user's contact list
+//        setDeviceContacts(adapter);     // Load the user's contact list
         adapter.notifyDataSetChanged(); // Notify the adapter data modification
 
         return root;
@@ -87,17 +87,13 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_sub1:
                 switchFab();
-                Toast.makeText(getActivity(), "First Fab", Toast.LENGTH_SHORT).show();
-                /*
-                * Do something
-                */
+                Toast.makeText(getActivity(), "Load contacts from server", Toast.LENGTH_SHORT).show();
+                /* Load contacts from server via uid */
                 break;
             case R.id.fab_sub2:
                 switchFab();
                 Toast.makeText(getActivity(), "Second Fab", Toast.LENGTH_SHORT).show();
-                /*
-                 * Do something
-                 */
+                /* Write contact on server */
                 break;
         }
     }
@@ -161,16 +157,15 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
                 contact.setName(contactObject.getString("NAME"));
                 contact.setPhoneNumber(contactObject.getString("PHONE"));
-                contact.setProfile(getResources().getIdentifier(
-                        contactObject.getString("PROFILE"),"drawable",
-                        getActivity().getPackageName()));
+//                contact.setProfile(getResources().getIdentifier(
+//                        contactObject.getString("PROFILE"),"drawable",
+//                        getActivity().getPackageName()));
 
                 adapter.addItem(contact);
             }
         }catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     // Load the user's contact list

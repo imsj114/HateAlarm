@@ -35,8 +35,8 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val button = findViewById<Button>(R.id.button_test)
-        button.setOnClickListener(this)
+//        val button = findViewById<Button>(R.id.button_test)
+//        button.setOnClickListener(this)
 
         //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
 
@@ -75,10 +75,10 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onClick(p0: View?) {
-        viewModel._contacts.value = listOf(
-            Contact(),
-            Contact()
-        )
-    }
+//    override fun onClick(p0: View?) {
+////        viewModel._contacts.value = listOf(
+////            Contact(),
+////            Contact()
+////        )
+////    }
 }
