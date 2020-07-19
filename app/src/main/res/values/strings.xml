@@ -6,4 +6,11 @@
     <string name="title_gallery">Gallery</string>
     <string name="title_notifications">Notifications</string>
     <string name="facebook_app_id">305810097272562</string> <string name="fb_login_protocol_scheme">fb305810097272562</string>
+    <string name="dialog_title">Setting Uid for contacts list</string>
+    <string name="dialog_text">Your Uid</string>
+    <string name="dialog_button">Reload Contacts</string>
+    <string name="dialog_addcontact_title">Add contact</string>
+    <string name="dialog_addcontact_name">Name</string>
+    <string name="dialog_addcontact_phone">Phonenumber</string>
+    <string name="dialog_addcontact_btn">Submit</string>
 </resources>

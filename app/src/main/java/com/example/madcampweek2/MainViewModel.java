@@ -24,7 +24,7 @@ public class MainViewModel extends ViewModel {
 
     private RetroApi retroApi;
     private String BASE_URL = "http://192.249.19.240:3080/";
-    private String uid = "kakao";
+    private String uid;
 
     //this is the data that we will fetch asynchronously
     private MutableLiveData<List<Contact>> _contacts;
@@ -40,7 +40,6 @@ public class MainViewModel extends ViewModel {
         //finally we will return the list
         return _contacts;
     }
-
 
     //This method is using Retrofit to get the JSON data from URL
     private void loadContacts(String uid) {
@@ -69,6 +68,10 @@ public class MainViewModel extends ViewModel {
                 Log.d(TAG, "ViewModel getUserContacts Fail:" + t.getMessage());
             }
         });
+    }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+        loadContacts(uid);
     }
 }

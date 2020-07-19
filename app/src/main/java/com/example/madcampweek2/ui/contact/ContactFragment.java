@@ -1,5 +1,6 @@
 package com.example.madcampweek2.ui.contact;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -41,10 +45,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.ContentValues.TAG;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
+    MainViewModel mainViewModel;
     private RecyclerAdapter adapter;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
@@ -106,8 +112,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        model.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        mainViewModel.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> _contacts) {
                 adapter.setData(_contacts);
@@ -124,37 +130,15 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_sub1:
                 switchFab();
-                Toast.makeText(getActivity(), "Load contacts from server", Toast.LENGTH_SHORT).show();
-                /* Load contacts from server via uid
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-                RetroApi retroApi = retrofit.create(RetroApi.class);
-                getContactList(retroApi, uidtest);
-                adapter.notifyDataSetChanged(); */
+                Toast.makeText(getActivity(), "Type Uid for contacts list", Toast.LENGTH_SHORT).show();
+                getUidInput();
                 break;
             case R.id.fab_sub2:
                 switchFab();
                 Toast.makeText(getActivity(), "Add a contact", Toast.LENGTH_SHORT).show();
-                /* Write contact on server */
+                addContact();
                 break;
         }
-    }
-
-    private class RetroCall extends AsyncTask<Call, Void, String> {
-        @Override
-        protected String doInBackground(Call... calls) {
-            try{
-                Call<List<Contact>> call = calls[0];
-                Response<List<Contact>> response = call.execute();
-                return response.body().toString();
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-            return null;
-        }
-
     }
 
     // Fab open/close switch
@@ -182,6 +166,59 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    public void getUidInput(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_getuid, null);
+        builder.setView(view);
+
+        final Button submit = (Button) view.findViewById(R.id.buttonReload);
+        final EditText editTextUid = (EditText) view.findViewById(R.id.editTextUid);
+
+        final AlertDialog dialog = builder.create();
+        submit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String strUid = editTextUid.getText().toString();
+                mainViewModel.setUid(strUid);
+                Toast.makeText(getApplicationContext(), "Your Uid: "+strUid, Toast.LENGTH_LONG).show();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void addContact(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_add_contact, null);
+        builder.setView(view);
+
+        final Button submit = (Button) view.findViewById(R.id.buttonSubmit);
+        final EditText editTextName = (EditText) view.findViewById(R.id.editTextAddName);
+        final EditText editTextPhone = (EditText) view.findViewById(R.id.editTextAddPhone);
+
+        final AlertDialog dialog = builder.create();
+        submit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String strName = editTextName.getText().toString();
+                String strPhone = editTextPhone.getText().toString();
+
+                if(strName.equals("") || strPhone.equals("")){
+                    Toast.makeText(getApplicationContext()
+                            , "Type infomation for new contact", Toast.LENGTH_LONG).show();
+                } else{
+                    /*
+                    *  Add contact to server
+                    */
+                    Toast.makeText(getApplicationContext()
+                            , "Name: "+ strName+ "\nPhonenumber: "+ strPhone
+                            , Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+    }
 
     // Load contact data from json file
     // Return jsonphoneBook in ArrayList<Contact>
