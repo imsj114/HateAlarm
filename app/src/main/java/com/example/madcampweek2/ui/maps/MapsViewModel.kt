@@ -66,8 +66,9 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                     val lng = jsonObject.getDouble("lng")
                     val name = jsonObject.getString("name")
                     val uid = jsonObject.getString("uid")
-                    // if(uid != myUid)
-                    arr.add(User(lat, lng, name))
+                    if(uid != myUid){
+                        arr.add(User(lat, lng, name))
+                    }
                 }
                 _users.postValue(arr)
             })

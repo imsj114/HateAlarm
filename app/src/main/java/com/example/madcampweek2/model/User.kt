@@ -3,6 +3,7 @@ package com.example.madcampweek2.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.SphericalUtil
 import org.json.JSONObject
 
 class User(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no name}") : Parcelable{
@@ -27,6 +28,10 @@ class User(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no
     }
 
     override fun describeContents(): Int = 0
+
+    fun getDistanceFrom(latlng: LatLng): Double {
+        return SphericalUtil.computeDistanceBetween(latlng, this.toLatLng())
+    }
 
     companion object CREATOR : Parcelable.Creator<User> {
         override fun createFromParcel(parcel: Parcel): User {

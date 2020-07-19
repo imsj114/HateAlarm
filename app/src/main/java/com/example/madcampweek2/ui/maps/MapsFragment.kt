@@ -29,7 +29,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
+
+const val ALERT_RADIUS = 5.0
 
 class MapsFragment : Fragment() , View.OnClickListener{
     private val TAG = "TAG_Map"
@@ -57,6 +60,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
     var isFabOpen = false
     var isBound = false
     var isTrackingMode = false
+    var myLastLocation: LatLng? = null
 
     private val model: MapsViewModel by activityViewModels()
 
@@ -64,17 +68,26 @@ class MapsFragment : Fragment() , View.OnClickListener{
         mMap = map
         updateLocationUI()
 
-        model.getLatLng().observe(viewLifecycleOwner, Observer<List<LatLng>>{ list ->
+        model.getUsers().observe(viewLifecycleOwner, Observer<List<User>>{ list ->
+            mMap!!.clear()
             list.map{
                 mMap!!.addMarker(MarkerOptions().apply {
-                    position(it)
-                })}
+                    position(it.toLatLng())
+                })
+                if(myLastLocation != null){
+                    val r= it.getDistanceFrom(myLastLocation!!)
+                    if( r < ALERT_RADIUS) {
+                        Snackbar.make(activity?.findViewById(R.id.nav_host_fragment)!!, "ALERT!! distance: $r", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
         })
         model.getMyLocation().observe(viewLifecycleOwner, Observer<LatLng?>{
             if(firstTime){
                 setDeviceLocation(it)
                 firstTime = false
             }
+            myLastLocation = it
         })
     }
 
