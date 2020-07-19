@@ -23,6 +23,8 @@ import com.example.madcampweek2.R
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.Marker
 
+const val TAG = "TAG_TrackingService"
+
 
 class TrackingService : Service() {
     private val binder = LocationServiceBinder()
@@ -33,60 +35,30 @@ class TrackingService : Service() {
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mLastLocation: Location
 
-    private val LOCATION_INTERVAL = 5L
-    private val LOCATION_DISTANCE = 0.1F
-
-    internal var mCurrLocationMarker: Marker? = null
     internal var mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
+            Log.i(TAG, "- onLocationResult()")
             val locationList = locationResult.locations
             if (locationList.isNotEmpty()) {
                 //The last location in the list is the newest
                 val location = locationList.last()
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude())
+                Log.i(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude())
                 Toast.makeText(applicationContext, "Location: " + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG).show()
                 mLastLocation = location
-//                if (mCurrLocationMarker != null) {
-//                    mCurrLocationMarker?.remove()
-//                }
-
-                //Place current location marker
-//                val latLng = LatLng(location.latitude, location.longitude)
-//                val markerOptions = MarkerOptions()
-//                markerOptions.position(latLng)
-//                markerOptions.title("Current Position")
-//                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                // mCurrLocationMarker = mGoogleMap.addMarker(markerOptions)
-
-                //move map camera
-                // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11.0F))
             }
         }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
+        Log.i(TAG, "- onBind()")
         return binder
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //do heavy work on a background thread
-        val input = intent?.getStringExtra("inputExtra")
-        createNotificationChannel()
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0, notificationIntent, 0
-        )
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Foreground Service Kotlin Example")
-            .setContentText(input)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentIntent(pendingIntent)
-            .build()
-        startForeground(1, notification)
-        //stopSelf()
-        return START_NOT_STICKY
+    override fun onCreate() {
+        super.onCreate()
+        Log.i(TAG, "- onCreate()")
     }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(CHANNEL_ID, "Foreground Service Channel",
@@ -96,9 +68,36 @@ class TrackingService : Service() {
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        //do heavy work on a background thread
+        Log.i(TAG, "- onStartCommand()")
+        createNotificationChannel()
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0, notificationIntent, 0
+        )
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Foreground Service Kotlin Example")
+            .setContentText("Tracking mode ON")
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .build()
+        startForeground(1, notification)
+
+        return START_NOT_STICKY
+    }
+
+
     fun startTracking() {
+        Log.i(TAG, "- startTracking()")
+
+        //stopSelf()
+        val INTERVAL = 5L
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = INTERVAL
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -108,7 +107,7 @@ class TrackingService : Service() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.i("TAG", "!!!!!!!need permission!!!!!!!")
-            // TODO: Consider calling
+            // Todo: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -124,7 +123,14 @@ class TrackingService : Service() {
     }
 
     fun stopTracking() {
+        Log.i(TAG, "- stopTracking()")
+        stopForeground(true)
         stopSelf()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "- onDestroy()")
     }
 
 

@@ -30,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "(button) onSuccess")
                 Log.d(TAG, AccessToken.getCurrentAccessToken().toString())
                 Log.d(TAG, Profile.getCurrentProfile()?.toString() ?: "none")
+                Log.d(TAG, Profile.getCurrentProfile()?.id ?: "none")
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 finish()
             }
