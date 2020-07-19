@@ -282,19 +282,19 @@ class MapsFragment : Fragment() , View.OnClickListener{
         }
     }
 
-    private fun isMyServiceRunning(
-        serviceClass: Class<*>,
-        context: Context
-    ): Boolean {
-        val manager =
-            context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                Log.i("Service already", "running")
-                return true
-            }
-        }
-        Log.i("Service not", "running")
-        return false
-    }
+//    private fun isMyServiceRunning(
+//        serviceClass: Class<*>,
+//        context: Context
+//    ): Boolean {
+//        val manager =
+//            context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+//        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+//            if (serviceClass.name == service.service.className) {
+//                Log.i("Service already", "running")
+//                return true
+//            }
+//        }
+//        Log.i("Service not", "running")
+//        return false
+//    }
 }

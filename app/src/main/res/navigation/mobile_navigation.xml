@@ -3,22 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_contact">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.madcampweek2.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_contact"
+        android:name="com.example.madcampweek2.ui.contact.ContactFragment"
+        android:label="@string/title_contact"
+        tools:layout="@layout/fragment_contact" />
 
     <fragment
         android:id="@+id/navigation_gallery"
-        android:name="com.example.madcampweek2.ui.gallery.RecyclerViewFragment"
+        android:name="com.example.madcampweek2.ui.gallery.GalleryFragment"
         android:label="@string/title_gallery"
-        tools:layout="@layout/recycler_view_frag" />
+        tools:layout="@layout/fragment_gallery" />
+
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.madcampweek2.MapsFragment"
+        android:name="com.example.madcampweek2.ui.maps.MapsFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_maps"/>
 </navigation>
