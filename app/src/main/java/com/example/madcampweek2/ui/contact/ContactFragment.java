@@ -57,11 +57,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private Animation fab_open, fab_close;
     private boolean isFabOpen = false;
 
-    private ArrayList<Contact> jsonphoneBook, devicephoneBook, serverphoneBook;
+    private ArrayList<Contact> jsonphoneBook, devicephoneBook;
 
     private String BASE_URL = "http://192.249.19.240:3080/";
-    private final String uidtest = "kakao";
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -135,7 +133,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_sub2:
                 switchFab();
-                Toast.makeText(getActivity(), "Add a contact", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Add contact", Toast.LENGTH_SHORT).show();
                 addContact();
                 break;
         }
@@ -172,15 +170,24 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.dialog_getuid, null);
         builder.setView(view);
 
-        final Button submit = (Button) view.findViewById(R.id.buttonReload);
+        final Button cancel = (Button) view.findViewById(R.id.buttonCancel);
+        final Button reload = (Button) view.findViewById(R.id.buttonReload);
         final EditText editTextUid = (EditText) view.findViewById(R.id.editTextUid);
 
         final AlertDialog dialog = builder.create();
-        submit.setOnClickListener(new View.OnClickListener() {
+
+        cancel.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        reload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String strUid = editTextUid.getText().toString();
                 mainViewModel.setUid(strUid);
-                Toast.makeText(getApplicationContext(), "Your Uid: "+strUid, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Your Uid: "+strUid, Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
@@ -194,18 +201,27 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         builder.setView(view);
 
         final Button submit = (Button) view.findViewById(R.id.buttonSubmit);
+        final Button cancel = (Button) view.findViewById(R.id.buttonCancel);
         final EditText editTextName = (EditText) view.findViewById(R.id.editTextAddName);
         final EditText editTextPhone = (EditText) view.findViewById(R.id.editTextAddPhone);
 
         final AlertDialog dialog = builder.create();
-        submit.setOnClickListener(new View.OnClickListener() {
+
+        cancel.setOnClickListener(new View.OnClickListener(){
+            @Override
             public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 String strName = editTextName.getText().toString();
                 String strPhone = editTextPhone.getText().toString();
 
                 if(strName.equals("") || strPhone.equals("")){
                     Toast.makeText(getApplicationContext()
-                            , "Type infomation for new contact", Toast.LENGTH_LONG).show();
+                            , "Type infomation for new contact", Toast.LENGTH_SHORT).show();
                 } else{
                     /*
                     *  Add contact to server
@@ -292,18 +308,21 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
                     User result = response.body();
-                    Toast.makeText(getActivity(),"registerUser Succeess\n Result:" + result.toString(),
+                    Toast.makeText(getActivity()
+                            ,"registerUser Succeess\n Result:" + result.toString(),
                             Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "registerUser Suceess, Result: " + result.toString());
                 } else{
-                    Toast.makeText(getActivity(),"registerUser response Fail", Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getActivity()
+                            ,"registerUser response Fail", Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "registerUser response Fail");
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(getActivity(),"registerUser Fail: " + t.getMessage(), Toast.LENGTH_LONG ).show();
+                Toast.makeText(getActivity()
+                        ,"registerUser Fail: " + t.getMessage(), Toast.LENGTH_LONG ).show();
                 Log.d(TAG, "registerUser Fail:" +t.getMessage());
             }
         });
@@ -317,18 +336,22 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
                 if(response.isSuccessful()){
                     List<Contact> result = response.body();
-                    Toast.makeText(getActivity(),"getUserContacts Succeess\n Result: " + result.toString(), Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getActivity()
+                            ,"getUserContacts Succeess\n Result: " + result.toString()
+                            , Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "getUserContacts Succeess\n Result: " + result.toString());
 //                    adapter.setData(result);
                 } else{
-                    Toast.makeText(getActivity(),"getUserContacts Fail", Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getActivity()
+                            ,"getUserContacts Fail", Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "getUserContacts Fail");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
-                Toast.makeText(getActivity(),"getUserContacts Fail: "+ t.getMessage(), Toast.LENGTH_LONG ).show();
+                Toast.makeText(getActivity()
+                        ,"getUserContacts Fail: "+ t.getMessage(), Toast.LENGTH_LONG ).show();
                 Log.d(TAG, "getUserContacts Fail: "+t.getMessage());
             }
         });
