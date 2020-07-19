@@ -153,22 +153,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
             R.id.fab_map1 -> {
                 switchFab()
                 Log.i(TAG, isTrackingMode.toString())
-                if(!isTrackingMode){
-                    Log.i(TAG, "start tracking")
-//                    val intent = Intent(requireContext(), TrackingService::class.java)
-//                    ContextCompat.startForegroundService(requireContext(), intent)
-//                    requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-//                    isBound = true
-//                    isTrackingMode = true
-                }else{
-                    Log.i(TAG, "stop tracking")
-                    if(isBound){
-                        requireActivity().unbindService(serviceConnection)
-                    }
-                    gpsService!!.stopTracking()
-                    gpsService = null
-                    isTrackingMode = false
-                }
+                model.changeSocketServiceState()
             }
             R.id.fab_map2 -> {
                 switchFab()

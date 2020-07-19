@@ -1,12 +1,19 @@
 package com.example.madcampweek2.ui.maps
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.*
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.madcampweek2.MainActivity
+import com.example.madcampweek2.R
 import com.facebook.Profile
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
@@ -21,6 +28,7 @@ class SocketService : Service(){
         val instance : SocketService = SocketService()
         const val TAG = "TAG_SocketService"
         const val BROADCAST_MY_LOCATION_CHANGED = "com.example.madcampweek2"
+        private val CHANNEL_ID = "ForegroundService Kotlin"
     }
     val mSocket: Socket = IO.socket("http://192.249.19.243:880")
     val binder = SocketBinder()
@@ -85,6 +93,24 @@ class SocketService : Service(){
         application.bindService(trackerIntent, trackerConnection, Context.BIND_AUTO_CREATE)
 
         uid = Profile.getCurrentProfile()?.id!!
+
+        createNotificationChannel()
+
+        val notificationIntent = Intent(this, MainActivity::class.java)
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0, notificationIntent, 0
+        )
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Foreground Service Kotlin Example")
+            .setContentText("Socket connection mode ON")
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        startForeground(1, notification)
+
         super.onCreate()
     }
 
@@ -94,8 +120,18 @@ class SocketService : Service(){
     }
 
     override fun onDestroy() {
-        LocalBroadcastManager.getInstance(application).registerReceiver(locationReceiver, IntentFilter(BROADCAST_MY_LOCATION_CHANGED))
+        Log.i(TAG, "onDestroy")
+        LocalBroadcastManager.getInstance(application).unregisterReceiver(locationReceiver)
         super.onDestroy()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(CHANNEL_ID, "Foreground Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT)
+            val manager = getSystemService(NotificationManager::class.java)
+            manager!!.createNotificationChannel(serviceChannel)
+        }
     }
 
     val onConnect: Emitter.Listener = Emitter.Listener {
@@ -104,6 +140,12 @@ class SocketService : Service(){
 
     fun disconnect(){
         mSocket.disconnect()
+        Log.i(com.example.madcampweek2.ui.maps.TAG, "unbind from socketservice?")
+        if(trackerBound){
+            Log.i(com.example.madcampweek2.ui.maps.TAG, "unbind from socketservice!")
+            application.unbindService(trackerConnection)
+        }
+        stopForeground(true)
         stopSelf()
     }
 

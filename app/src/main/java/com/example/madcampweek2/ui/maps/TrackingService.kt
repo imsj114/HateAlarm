@@ -27,7 +27,6 @@ const val TAG = "TAG_TrackingService"
 
 class TrackingService : Service() {
     private val binder = LocationServiceBinder()
-    private val CHANNEL_ID = "ForegroundService Kotlin"
     private lateinit var locationCallback: LocationCallback
     private var mLocationManager: LocationManager? = null
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -63,32 +62,7 @@ class TrackingService : Service() {
         super.onCreate()
         Log.i(TAG, "- onCreate()")
 
-        createNotificationChannel()
-
-        val notificationIntent = Intent(this, MainActivity::class.java)
-
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0, notificationIntent, 0
-        )
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Foreground Service Kotlin Example")
-            .setContentText("Tracking mode ON")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        startForeground(1, notification)
         startTracking()
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val serviceChannel = NotificationChannel(CHANNEL_ID, "Foreground Service Channel",
-                NotificationManager.IMPORTANCE_DEFAULT)
-            val manager = getSystemService(NotificationManager::class.java)
-            manager!!.createNotificationChannel(serviceChannel)
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -132,11 +106,6 @@ class TrackingService : Service() {
         )
     }
 
-    fun stopTracking() {
-        Log.i(TAG, "- stopTracking()")
-        stopForeground(true)
-        stopSelf()
-    }
 
     override fun onDestroy() {
         super.onDestroy()

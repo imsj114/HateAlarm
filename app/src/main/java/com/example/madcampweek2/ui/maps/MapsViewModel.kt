@@ -1,6 +1,8 @@
 package com.example.madcampweek2.ui.maps
 
+import android.app.ActivityManager
 import android.app.Application
+import android.app.Service
 import android.content.*
 import android.location.Location
 import android.os.Build
@@ -18,6 +20,7 @@ import io.socket.emitter.Emitter
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.net.Socket
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
     val _users =  MutableLiveData<List<User>>()
@@ -106,26 +109,72 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     init{
         myUid = Profile.getCurrentProfile().id!!
         myName = Profile.getCurrentProfile().name!!
-
-        val socketIntent = Intent(application, SocketService::class.java)
-        application.startService(socketIntent)
-        application.bindService(socketIntent, socketConnection, Context.BIND_AUTO_CREATE)
-
-        val trackerIntent = Intent(application, TrackingService::class.java)
-        ContextCompat.startForegroundService(application, trackerIntent)
-        application.bindService(trackerIntent, trackerConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onCleared() {
-        LocalBroadcastManager.getInstance(_application).registerReceiver(locationReceiver, IntentFilter(BROADCAST_MY_LOCATION_CHANGED))
+        LocalBroadcastManager.getInstance(_application).unregisterReceiver(locationReceiver)
+
+        if(socketBound) _application.unbindService(socketConnection)
+        if(trackerBound){
+            Log.i(TAG, "unbind from mapsviewmodel")
+            _application.unbindService(trackerConnection)
+        }
+
+
         super.onCleared()
     }
 
+    fun changeSocketServiceState() {
+        val prefs =  _application.getSharedPreferences("PREF", Service.MODE_PRIVATE)
+        val isServiceOn = socketBound //isMyServiceRunning(SocketService::class.java)
+        Log.i(TAG, "isServiceOn : $isServiceOn")
+        if(isServiceOn){
+            endSocket()
+        }else{
+            Log.i(TAG, "isServiceOn : $socketBound, $trackerBound")
+            startSocket()
+        }
+    }
 
+    private fun startSocket() {
+        if(!socketBound){
+            val socketIntent = Intent(_application, SocketService::class.java)
+            ContextCompat.startForegroundService(_application, socketIntent)
+            _application.bindService(socketIntent, socketConnection, Context.BIND_AUTO_CREATE)
+        }
+        if(!trackerBound){
+            val trackerIntent = Intent(_application, TrackingService::class.java)
+            _application.bindService(trackerIntent, trackerConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    private fun endSocket() {
+        if(socketBound){
+            _application.unbindService(socketConnection)
+            socketService.disconnect()
+            socketBound = false
+        }
+        if(!trackerBound){
+            _application.unbindService(trackerConnection)
+            trackerBound = false
+        }
+        _users.postValue(listOf())
+    }
 
     fun getUsers(): LiveData<List<User>> = _users
     fun getLatLng(): LiveData<List<LatLng>> = _locations
     fun getMyLocation(): LiveData<LatLng?> = _myLocation
 
     fun setUsers(arr: List<User>) = _users.apply{ value = arr }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager: ActivityManager = _application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.getClassName()) {
+                return true
+            }
+        }
+        return false
+    }
+
 }
