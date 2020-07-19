@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -57,6 +58,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
     lateinit var fab: FloatingActionButton
     lateinit var fab1: FloatingActionButton
     lateinit var fab2: FloatingActionButton
+    lateinit var textView: TextView
     var isFabOpen = false
     var isBound = false
     var isTrackingMode = false
@@ -89,6 +91,15 @@ class MapsFragment : Fragment() , View.OnClickListener{
             }
             myLastLocation = it
         })
+        model.getIsOnline().observe(viewLifecycleOwner, Observer {isOnline ->
+            if(isOnline){
+                textView.text = "online"
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+            } else{
+                textView.text = "offline"
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.gray))
+            }
+        })
     }
 
 
@@ -108,6 +119,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
         fab = view.findViewById(R.id.fab_map) as FloatingActionButton
         fab1 = view.findViewById(R.id.fab_map1) as FloatingActionButton
         fab2 = view.findViewById(R.id.fab_map2) as FloatingActionButton
+        textView = view.findViewById(R.id.map_text)
 
         fab.setOnClickListener(this)
         fab1.setOnClickListener(this)

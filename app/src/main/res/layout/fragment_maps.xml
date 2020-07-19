@@ -50,4 +50,12 @@
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/map_text"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        app:layout_constraintStart_toStartOf="@+id/map"
+        app:layout_constraintTop_toTopOf="@+id/map"
+        android:layout_margin="30dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

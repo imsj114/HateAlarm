@@ -28,6 +28,8 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         it.map{ user -> user.toLatLng() }
     }
     val _myLocation = MutableLiveData<LatLng?>()
+    val _isOnline = MutableLiveData<Boolean>(false)
+
     private val RECEIVE_USERS = "location"
     private val BROADCAST_MY_LOCATION_CHANGED = "com.example.madcampweek2"
     var myUid = ""
@@ -57,6 +59,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             val binder = service as SocketService.SocketBinder
             socketService = binder.getService()
             socketBound = true
+            _isOnline.postValue(true)
 
             socketService.subscribe(RECEIVE_USERS, Emitter.Listener {args ->
                 Log.i(SocketService.TAG, "(MapsViewModel) listened location update")
@@ -88,6 +91,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         }
         override fun onServiceDisconnected(arg0: ComponentName) {
             socketBound = false
+            _isOnline.postValue(false)
         }
     }
 
@@ -109,6 +113,10 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     init{
         myUid = Profile.getCurrentProfile().id!!
         myName = Profile.getCurrentProfile().name!!
+
+        if(isMyServiceRunning(SocketService::class.java)){
+            startSocket()
+        }
     }
 
     override fun onCleared() {
@@ -153,6 +161,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             _application.unbindService(socketConnection)
             socketService.disconnect()
             socketBound = false
+            _isOnline.postValue(false)
         }
         if(!trackerBound){
             _application.unbindService(trackerConnection)
@@ -164,7 +173,16 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     fun getUsers(): LiveData<List<User>> = _users
     fun getLatLng(): LiveData<List<LatLng>> = _locations
     fun getMyLocation(): LiveData<LatLng?> = _myLocation
-
+    fun getIsOnline(): LiveData<Boolean> = _isOnline
     fun setUsers(arr: List<User>) = _users.apply{ value = arr }
 
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager: ActivityManager = _application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.getClassName()) {
+                return true
+            }
+        }
+        return false
+    }
 }
