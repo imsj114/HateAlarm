@@ -1,7 +1,6 @@
 package com.example.madcampweek2.ui.maps
 
 import android.Manifest
-import android.app.ActivityManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,8 +29,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.socket.client.IO
-import io.socket.client.Socket
 
 
 class MapsFragment : Fragment() , View.OnClickListener{
@@ -49,6 +45,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
     private val mDefaultLocation = LatLng(-3.0, 151.0)
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
     private var gpsService: TrackingService? = null
+    private var firstTime = true
 
     lateinit var sp: SharedPreferences
 
@@ -66,7 +63,6 @@ class MapsFragment : Fragment() , View.OnClickListener{
     private val callback = OnMapReadyCallback { map ->
         mMap = map
         updateLocationUI()
-        getDeviceLocation()
 
         model.getLatLng().observe(viewLifecycleOwner, Observer<List<LatLng>>{ list ->
             list.map{
@@ -74,8 +70,11 @@ class MapsFragment : Fragment() , View.OnClickListener{
                     position(it)
                 })}
         })
-        model.getMyLocation().observe(viewLifecycleOwner, Observer<LatLng>{
-            // TODO: Update user location on mMap
+        model.getMyLocation().observe(viewLifecycleOwner, Observer<LatLng?>{
+            if(firstTime){
+                setDeviceLocation(it)
+                firstTime = false
+            }
         })
     }
 
@@ -143,11 +142,11 @@ class MapsFragment : Fragment() , View.OnClickListener{
                 Log.i(TAG, isTrackingMode.toString())
                 if(!isTrackingMode){
                     Log.i(TAG, "start tracking")
-                    val intent = Intent(requireContext(), TrackingService::class.java)
-                    ContextCompat.startForegroundService(requireContext(), intent)
-                    requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-                    isBound = true
-                    isTrackingMode = true
+//                    val intent = Intent(requireContext(), TrackingService::class.java)
+//                    ContextCompat.startForegroundService(requireContext(), intent)
+//                    requireActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+//                    isBound = true
+//                    isTrackingMode = true
                 }else{
                     Log.i(TAG, "stop tracking")
                     if(isBound){
@@ -235,52 +234,75 @@ class MapsFragment : Fragment() , View.OnClickListener{
             } else {
                 mMap!!.setMyLocationEnabled(false)
                 mMap!!.getUiSettings().setMyLocationButtonEnabled(false)
-                mLastKnownLocation = null
-                getLocationPermission()
             }
         } catch (e: SecurityException) {
             Log.e("Exception: %s", e.message!!)
         }
     }
 
-    private fun getDeviceLocation() {
+    private fun setDeviceLocation(myLocation: LatLng?) {
         /*
      * Get the best and most recent location of the device, which may be null in rare
      * cases when a location is not available.
      */
-        try {
-            if (mLocationPermissionGranted) {
-                val locationResult = mFusedLocationProviderClient.lastLocation
-                locationResult.addOnCompleteListener(requireActivity()
-                ) { task ->
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        mLastKnownLocation = task.getResult()
-                        mMap!!.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    mLastKnownLocation!!.latitude,
-                                    mLastKnownLocation!!.longitude
-                                ), DEFAULT_ZOOM
-                            )
-                        )
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.")
-                        Log.e(TAG, "Exception: %s", task.getException())
-                        mMap!!.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                mDefaultLocation,
-                                DEFAULT_ZOOM
-                            )
-                        )
-                        mMap!!.uiSettings.isMyLocationButtonEnabled = false
-                    }
-                }
-            }
-        } catch (e: SecurityException) {
-            Log.e("Exception: %s", e.message!!)
-        }
+        mMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    myLocation!!.latitude,
+                    myLocation!!.longitude
+                ), DEFAULT_ZOOM
+            )
+        )
+            ?: {
+                Log.d(TAG, "Current location is null. Using defaults.")
+                mMap!!.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        mDefaultLocation,
+                        DEFAULT_ZOOM
+                    )
+                )
+                mMap!!.uiSettings.isMyLocationButtonEnabled = false
+            }()
     }
+
+//    private fun getDeviceLocation() {
+//        /*
+//     * Get the best and most recent location of the device, which may be null in rare
+//     * cases when a location is not available.
+//     */
+//        try {
+//            if (mLocationPermissionGranted) {
+//                val locationResult = mFusedLocationProviderClient.lastLocation
+//                locationResult.addOnCompleteListener(requireActivity()
+//                ) { task ->
+//                    if (task.isSuccessful()) {
+//                        // Set the map's camera position to the current location of the device.
+//                        mLastKnownLocation = task.getResult()
+//                        mMap!!.moveCamera(
+//                            CameraUpdateFactory.newLatLngZoom(
+//                                LatLng(
+//                                    mLastKnownLocation!!.latitude,
+//                                    mLastKnownLocation!!.longitude
+//                                ), DEFAULT_ZOOM
+//                            )
+//                        )
+//                    } else {
+//                        Log.d(TAG, "Current location is null. Using defaults.")
+//                        Log.e(TAG, "Exception: %s", task.getException())
+//                        mMap!!.moveCamera(
+//                            CameraUpdateFactory.newLatLngZoom(
+//                                mDefaultLocation,
+//                                DEFAULT_ZOOM
+//                            )
+//                        )
+//                        mMap!!.uiSettings.isMyLocationButtonEnabled = false
+//                    }
+//                }
+//            }
+//        } catch (e: SecurityException) {
+//            Log.e("Exception: %s", e.message!!)
+//        }
+//    }
 
 //    private fun isMyServiceRunning(
 //        serviceClass: Class<*>,

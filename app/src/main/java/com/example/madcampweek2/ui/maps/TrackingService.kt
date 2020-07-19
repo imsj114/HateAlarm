@@ -1,10 +1,7 @@
 package com.example.madcampweek2.ui.maps
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,9 +15,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.madcampweek2.MainActivity
 import com.example.madcampweek2.R
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 
 const val TAG = "TAG_TrackingService"
@@ -46,6 +45,12 @@ class TrackingService : Service() {
                 Toast.makeText(applicationContext, "Location: " + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG).show()
                 mLastLocation = location
             }
+            // Broadcast mLastLocation to MapsViewModel and SocketService
+            val myLocationIntent = Intent().also{intent ->
+                intent.setAction("com.example.madcampweek2")
+                intent.putExtra("lastLocation", LatLng(mLastLocation.latitude, mLastLocation.longitude))
+            }
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(myLocationIntent)
         }
     }
 
@@ -57,6 +62,24 @@ class TrackingService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.i(TAG, "- onCreate()")
+
+        createNotificationChannel()
+
+        val notificationIntent = Intent(this, MainActivity::class.java)
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0, notificationIntent, 0
+        )
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Foreground Service Kotlin Example")
+            .setContentText("Tracking mode ON")
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        startForeground(1, notification)
+        startTracking()
     }
 
     private fun createNotificationChannel() {
@@ -71,19 +94,6 @@ class TrackingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //do heavy work on a background thread
         Log.i(TAG, "- onStartCommand()")
-        createNotificationChannel()
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0, notificationIntent, 0
-        )
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Foreground Service Kotlin Example")
-            .setContentText("Tracking mode ON")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentIntent(pendingIntent)
-            .build()
-        startForeground(1, notification)
 
         return START_NOT_STICKY
     }
@@ -107,7 +117,7 @@ class TrackingService : Service() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.i("TAG", "!!!!!!!need permission!!!!!!!")
-            // Todo: Consider calling
+            // Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
