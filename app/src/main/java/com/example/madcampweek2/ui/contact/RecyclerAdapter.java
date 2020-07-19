@@ -1,5 +1,6 @@
 package com.example.madcampweek2.ui.contact;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.model.Contact;
 
@@ -71,6 +73,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView1.setText(data.getName());
             textView2.setText(data.getPhoneNumber());
             imageView.setImageResource(R.drawable.angmond);
+//
+//            Glide.with(adapterContext)
+//                .load(data.getProfile())
+//                .into(holder.imageView);
         }
     }
 }

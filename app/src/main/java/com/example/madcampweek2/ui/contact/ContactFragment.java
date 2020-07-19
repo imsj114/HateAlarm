@@ -45,8 +45,6 @@ import static android.content.ContentValues.TAG;
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
-    private MainViewModel mainViewModel;
-    private RecyclerView ContactView;
     private RecyclerAdapter adapter;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
@@ -55,7 +53,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
     private ArrayList<Contact> jsonphoneBook, devicephoneBook, serverphoneBook;
 
-    private RetroApi retroApi;
     private String BASE_URL = "http://192.249.19.240:3080/";
     private final String uidtest = "kakao";
 
@@ -63,17 +60,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_contact, container, false);
-//        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         final RecyclerView ContactView =
                 root.findViewById(R.id.recyclerview_contacts);
-
-//        mainViewModel.getContacts().observe(this, new Observer<List<Contact>>() {
-//            @Override
-//            public void onChanged(List<Contact> contacts) {
-//                adapter = new RecyclerAdapter();
-//            }
-//        });
 
         // Floating buttons setting
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
@@ -93,27 +82,23 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         adapter = new RecyclerAdapter();
         ContactView.setAdapter(adapter);
 
+        /*
         // Recycler adapter contact data setting
-//        jsonphoneBook = loadJSONcontacts("contacts.json");  // From json file
-//        setDeviceContacts(adapter, jsonphoneBook);
+        // From json file
+        jsonphoneBook = loadJSONcontacts("contacts.json");
+        setDeviceContacts(adapter, jsonphoneBook);
+            // From device
+        devicephoneBook = loadDeviceContacts();
+        setDeviceContacts(adapter, devicephoneBook);
+         */
 
-//        devicephoneBook = loadDeviceContacts();                      // From device
-//        setDeviceContacts(adapter, devicephoneBook);
+        // test용~
         Contact con1 = new Contact();
         con1.setName("only");
         con1.setPhoneNumber("102013123");
 
         adapter.addItem(con1);
         adapter.notifyDataSetChanged();
-
-        // Retrofit server communication set
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RetroApi retroApi = retrofit.create(RetroApi.class);
-
 
         return root;
     }
@@ -126,6 +111,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onChanged(List<Contact> _contacts) {
                 adapter.setData(_contacts);
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -139,14 +125,14 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             case R.id.fab_sub1:
                 switchFab();
                 Toast.makeText(getActivity(), "Load contacts from server", Toast.LENGTH_SHORT).show();
-                /* Load contacts from server via uid */
+                /* Load contacts from server via uid
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
-                        .build();
+                    .build();
                 RetroApi retroApi = retrofit.create(RetroApi.class);
                 getContactList(retroApi, uidtest);
-//                adapter.setData((List<Contact>) mainViewModel.getContacts());
+                adapter.notifyDataSetChanged(); */
                 break;
             case R.id.fab_sub2:
                 switchFab();
@@ -296,7 +282,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                     List<Contact> result = response.body();
                     Toast.makeText(getActivity(),"getUserContacts Succeess\n Result: " + result.toString(), Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "getUserContacts Succeess\n Result: " + result.toString());
-                    adapter.setData(result);
+//                    adapter.setData(result);
                 } else{
                     Toast.makeText(getActivity(),"getUserContacts Fail", Toast.LENGTH_LONG ).show();
                     Log.d(TAG, "getUserContacts Fail");

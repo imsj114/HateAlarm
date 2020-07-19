@@ -22,6 +22,7 @@ import static android.content.ContentValues.TAG;
 
 public class MainViewModel extends ViewModel {
 
+    private RetroApi retroApi;
     private String BASE_URL = "http://192.249.19.240:3080/";
     private String uid = "kakao";
 
@@ -34,10 +35,9 @@ public class MainViewModel extends ViewModel {
         if (_contacts == null) {
             _contacts = new MutableLiveData<List<Contact>>();
             //we will load it asynchronously from server in this method
-
+            loadContacts(uid);
         }
         //finally we will return the list
-        loadContacts(uid);
         return _contacts;
     }
 
@@ -49,25 +49,26 @@ public class MainViewModel extends ViewModel {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-//        RetroApi retroApi = retrofit.create(RetroApi.class);
-//        Call<List<Contact>> call = retroApi.getUserContacts(uid);
-//
-//        call.enqueue(new Callback<List<Contact>>() {
-//            @Override
-//            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-//                if(response.isSuccessful()){
-//                    List<Contact> result = response.body();
-//                    Log.d(TAG, "getUserContacts Succeess\n Result: " + result.toString());
-//                    _contacts = (MutableLiveData<List<Contact>>) result;
-//                } else{
-//                    Log.d(TAG, "getUserContacts Fail");
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<List<Contact>> call, Throwable t) {
-//                Log.d(TAG, "getUserContacts Fail: "+t.getMessage());
-//            }
-//        });
+        RetroApi retroApi = retrofit.create(RetroApi.class);
+        Call<List<Contact>> call = retroApi.getUserContacts(uid);
+
+        call.enqueue(new Callback<List<Contact>>() {
+            @Override
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                if(response.isSuccessful()){
+                    List<Contact> result = response.body();
+                    Log.d(TAG, "ViewModel getUserContacts Succeess\n Result: " + result.toString());
+                    _contacts.setValue(result);
+                } else{
+                    Log.d(TAG, "ViewModel getUserContacts Fail");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+                Log.d(TAG, "ViewModel getUserContacts Fail:" + t.getMessage());
+            }
+        });
 
     }
 }
