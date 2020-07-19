@@ -167,14 +167,4 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setUsers(arr: List<User>) = _users.apply{ value = arr }
 
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager: ActivityManager = _application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.getClassName()) {
-                return true
-            }
-        }
-        return false
-    }
-
 }
