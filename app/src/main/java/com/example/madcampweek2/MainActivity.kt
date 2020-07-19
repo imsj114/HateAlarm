@@ -1,5 +1,6 @@
 package com.example.madcampweek2
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -38,7 +39,7 @@ public class MainActivity : AppCompatActivity(){
 //        val button = findViewById<Button>(R.id.button_test)
 //        button.setOnClickListener(this)
 
-        //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
+//        getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
 
     }
 

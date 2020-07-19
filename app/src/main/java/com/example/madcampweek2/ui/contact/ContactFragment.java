@@ -1,6 +1,8 @@
 package com.example.madcampweek2.ui.contact;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.madcampweek2.MainViewModel;
 import com.example.madcampweek2.R;
+import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
-import com.example.madcampweek2.ui.MainViewModel;
+import com.example.madcampweek2.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -28,20 +34,48 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.ContentValues.TAG;
+
+
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
+    private MainViewModel mainViewModel;
+    private RecyclerView ContactView;
     private RecyclerAdapter adapter;
+
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
     private Animation fab_open, fab_close;
     private boolean isFabOpen = false;
 
+    private ArrayList<Contact> jsonphoneBook, devicephoneBook, serverphoneBook;
+
+    private RetroApi retroApi;
+    private String BASE_URL = "http://192.249.19.240:3080/";
+    private final String uidtest = "kakao";
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_contact, container, false);
+//        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
-        final androidx.recyclerview.widget.RecyclerView ContactView =
+        final RecyclerView ContactView =
                 root.findViewById(R.id.recyclerview_contacts);
 
+//        mainViewModel.getContacts().observe(this, new Observer<List<Contact>>() {
+//            @Override
+//            public void onChanged(List<Contact> contacts) {
+//                adapter = new RecyclerAdapter();
+//            }
+//        });
+
+        // Floating buttons setting
         fab_open = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
@@ -60,9 +94,26 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         ContactView.setAdapter(adapter);
 
         // Recycler adapter contact data setting
-        setJSONcontacts(adapter, "contacts.json");  // Load contact data from contacts.json
-//        setDeviceContacts(adapter);     // Load the user's contact list
-        adapter.notifyDataSetChanged(); // Notify the adapter data modification
+//        jsonphoneBook = loadJSONcontacts("contacts.json");  // From json file
+//        setDeviceContacts(adapter, jsonphoneBook);
+
+//        devicephoneBook = loadDeviceContacts();                      // From device
+//        setDeviceContacts(adapter, devicephoneBook);
+        Contact con1 = new Contact();
+        con1.setName("only");
+        con1.setPhoneNumber("102013123");
+
+        adapter.addItem(con1);
+        adapter.notifyDataSetChanged();
+
+        // Retrofit server communication set
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetroApi retroApi = retrofit.create(RetroApi.class);
+
 
         return root;
     }
@@ -73,8 +124,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         MainViewModel model = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         model.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
             @Override
-            public void onChanged(List<Contact> contacts) {
-                adapter.setData(contacts);
+            public void onChanged(List<Contact> _contacts) {
+                adapter.setData(_contacts);
             }
         });
     }
@@ -89,13 +140,35 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 switchFab();
                 Toast.makeText(getActivity(), "Load contacts from server", Toast.LENGTH_SHORT).show();
                 /* Load contacts from server via uid */
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                RetroApi retroApi = retrofit.create(RetroApi.class);
+                getContactList(retroApi, uidtest);
+//                adapter.setData((List<Contact>) mainViewModel.getContacts());
                 break;
             case R.id.fab_sub2:
                 switchFab();
-                Toast.makeText(getActivity(), "Second Fab", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Add a contact", Toast.LENGTH_SHORT).show();
                 /* Write contact on server */
                 break;
         }
+    }
+
+    private class RetroCall extends AsyncTask<Call, Void, String> {
+        @Override
+        protected String doInBackground(Call... calls) {
+            try{
+                Call<List<Contact>> call = calls[0];
+                Response<List<Contact>> response = call.execute();
+                return response.body().toString();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+
     }
 
     // Fab open/close switch
@@ -124,10 +197,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    // Load contact data from json database
-    // Read and parse json file -> fill adapter with Contacts
-    public void setJSONcontacts(RecyclerAdapter adapter, String filename){
+    // Load contact data from json file
+    // Return jsonphoneBook in ArrayList<Contact>
+    public ArrayList<Contact> loadJSONcontacts(String filename){
         String json = "";
+        ArrayList<Contact> jsonphoneBook = new ArrayList<Contact>();
 
         try {   // Open and load json file
             InputStream is = getActivity().getAssets().open(filename);
@@ -143,7 +217,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         {
             ex.printStackTrace();
         }
-
         try{    // json data parsing
             JSONObject jsonObject = new JSONObject(json);
 
@@ -161,24 +234,82 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 //                        contactObject.getString("PROFILE"),"drawable",
 //                        getActivity().getPackageName()));
 
-                adapter.addItem(contact);
+                jsonphoneBook.add(contact);
             }
         }catch (JSONException e) {
             e.printStackTrace();
         }
+        return jsonphoneBook;
     }
 
-    // Load the user's contact list
-    public void setDeviceContacts(RecyclerAdapter adapter){
+    // Load the user device's contact list
+    // Return phoneBook in ArrayList<Contact>
+    public ArrayList<Contact> loadDeviceContacts(){
         ContactUtil contactUtil = new ContactUtil(getActivity());
 
         ArrayList<Contact> phoneBook;
         phoneBook = contactUtil.getContactList();
 
+        return phoneBook;
+    }
+
+    // Adapt contact data into recycler adapter
+    public void setDeviceContacts(RecyclerAdapter adapter, ArrayList<Contact> phoneBook){
         for(int i=0; i<phoneBook.size(); i++)
         {
             adapter.addItem(phoneBook.get(i));
         }
     }
+
+    public void postUserContacts(RetroApi retroApi, User user){
+        Call<User> call = retroApi.registerUser(user);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    User result = response.body();
+                    Toast.makeText(getActivity(),"registerUser Succeess\n Result:" + result.toString(),
+                            Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "registerUser Suceess, Result: " + result.toString());
+                } else{
+                    Toast.makeText(getActivity(),"registerUser response Fail", Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "registerUser response Fail");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getActivity(),"registerUser Fail: " + t.getMessage(), Toast.LENGTH_LONG ).show();
+                Log.d(TAG, "registerUser Fail:" +t.getMessage());
+            }
+        });
+    }
+
+    public void getContactList(RetroApi retroApi, String uid){
+        Call<List<Contact>> call = retroApi.getUserContacts(uid);
+
+        call.enqueue(new Callback<List<Contact>>() {
+            @Override
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                if(response.isSuccessful()){
+                    List<Contact> result = response.body();
+                    Toast.makeText(getActivity(),"getUserContacts Succeess\n Result: " + result.toString(), Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "getUserContacts Succeess\n Result: " + result.toString());
+                    adapter.setData(result);
+                } else{
+                    Toast.makeText(getActivity(),"getUserContacts Fail", Toast.LENGTH_LONG ).show();
+                    Log.d(TAG, "getUserContacts Fail");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+                Toast.makeText(getActivity(),"getUserContacts Fail: "+ t.getMessage(), Toast.LENGTH_LONG ).show();
+                Log.d(TAG, "getUserContacts Fail: "+t.getMessage());
+            }
+        });
+    }
+
 
 }
