@@ -1,12 +1,15 @@
 package com.example.madcampweek2
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
+//import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,6 +18,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.madcampweek2.ui.MainViewModel
+import com.example.madcampweek2.model.Contact
+import com.facebook.Profile
+import com.bumptech.glide.Glide
+import com.example.madcampweek2.model.Image
+import com.example.madcampweek2.ui.LoginActivity
+import com.facebook.ProfileTracker
 
 
 public class MainActivity : AppCompatActivity(){
@@ -34,7 +44,50 @@ public class MainActivity : AppCompatActivity(){
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+
+        val logout_button = findViewById<Button>(R.id.user_logout)
+        logout_button.setOnClickListener{
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+        }
+
         //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
+        val login_status = findViewById<TextView>(R.id.login_status)
+        val user_image = findViewById<ImageView>(R.id.user_image)
+        val user_name = findViewById<TextView>(R.id.user_id)
+        login_status.setText("User Profile")
+        var mProfileTracker: ProfileTracker? = null
+        if (Profile.getCurrentProfile() == null) {
+            mProfileTracker = object : ProfileTracker() {
+                override fun onCurrentProfileChanged(
+                    oldProfile: Profile?,
+                    currentProfile: Profile
+                ) {
+                    Log.d("facebook - profile", currentProfile.firstName)
+                    mProfileTracker?.stopTracking()
+                    Glide.with(this@MainActivity)
+                        .load(Profile.getCurrentProfile()?.getProfilePictureUri(300,300))
+                        .circleCrop()
+                        .fitCenter()
+                        .override(300, 300)
+                        .placeholder(R.drawable.image_load)
+                        .into(user_image)
+                    user_name.setText(Profile.getCurrentProfile()!!.lastName + Profile.getCurrentProfile()!!.firstName)
+                }
+            }
+            // no need to call startTracking() on mProfileTracker
+            // because it is called by its constructor, internally.
+        } else {
+            val profile = Profile.getCurrentProfile()
+            Log.v("facebook - profile", profile.firstName)
+            Glide.with(this)
+                .load(Profile.getCurrentProfile()?.getProfilePictureUri(300,300))
+                .circleCrop()
+                .fitCenter()
+                .override(400, 400)
+                .placeholder(R.drawable.image_load)
+                .into(user_image)
+            user_name.setText(Profile.getCurrentProfile()!!.lastName + Profile.getCurrentProfile()!!.firstName)
+        }
 
     }
 
