@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.madcampweek2.MainActivity
 import com.example.madcampweek2.R
@@ -105,7 +104,7 @@ class SocketService : Service(){
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Foreground Service Kotlin Example")
             .setContentText("Socket connection mode ON")
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.hulk_icon)
             .setContentIntent(pendingIntent)
             .build()
 
