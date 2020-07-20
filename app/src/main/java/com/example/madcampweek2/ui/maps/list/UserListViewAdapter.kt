@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.madcampweek2.R
-import com.example.madcampweek2.model.Image
 import com.example.madcampweek2.model.MapUser
 
 class UserListViewAdapter(val context: Context, val userList: List<MapUser>) : RecyclerView.Adapter<UserListViewAdapter.Holder>() {
