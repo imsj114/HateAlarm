@@ -104,7 +104,7 @@ class SocketService : Service(){
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Foreground Service Kotlin Example")
             .setContentText("Socket connection mode ON")
-            .setSmallIcon(R.mipmap.hulk_icon)
+            .setSmallIcon(R.mipmap.hulk_icon0)
             .setContentIntent(pendingIntent)
             .build()
 
