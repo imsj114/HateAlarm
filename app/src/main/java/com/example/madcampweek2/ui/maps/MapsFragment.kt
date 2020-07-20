@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.madcampweek2.R
-import com.example.madcampweek2.model.User
+import com.example.madcampweek2.model.MapUser
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -70,7 +70,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
         mMap = map
         updateLocationUI()
 
-        model.getUsers().observe(viewLifecycleOwner, Observer<List<User>>{ list ->
+        model.getUsers().observe(viewLifecycleOwner, Observer<List<MapUser>>{ list ->
             mMap!!.clear()
             list.map{
                 mMap!!.addMarker(MarkerOptions().apply {
@@ -169,7 +169,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
             }
             R.id.fab_map2 -> {
                 switchFab()
-                model.setUsers(listOf<User>(User(), User()))
+                model.setUsers(listOf<MapUser>(MapUser(), MapUser()))
                 //sp.edit().putBoolean("isTrackingMode", false).apply()
             }
         }

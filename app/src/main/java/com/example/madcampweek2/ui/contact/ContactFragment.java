@@ -1,7 +1,5 @@
 package com.example.madcampweek2.ui.contact;
 
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +23,7 @@ import com.example.madcampweek2.MainViewModel;
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
-import com.example.madcampweek2.model.User;
+import com.example.madcampweek2.model.MapUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -41,8 +38,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -300,14 +295,14 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    public void postUserContacts(RetroApi retroApi, User user){
-        Call<User> call = retroApi.registerUser(user);
+    public void postUserContacts(RetroApi retroApi, MapUser mapUser){
+        Call<MapUser> call = retroApi.registerUser(mapUser);
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<MapUser>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<MapUser> call, Response<MapUser> response) {
                 if(response.isSuccessful()){
-                    User result = response.body();
+                    MapUser result = response.body();
                     Toast.makeText(getActivity()
                             ,"registerUser Succeess\n Result:" + result.toString(),
                             Toast.LENGTH_LONG ).show();
@@ -320,7 +315,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<MapUser> call, Throwable t) {
                 Toast.makeText(getActivity()
                         ,"registerUser Fail: " + t.getMessage(), Toast.LENGTH_LONG ).show();
                 Log.d(TAG, "registerUser Fail:" +t.getMessage());

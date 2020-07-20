@@ -1,7 +1,6 @@
 package com.example.madcampweek2;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
-import com.example.madcampweek2.model.User;
+import com.example.madcampweek2.model.MapUser;
 
 import java.util.List;
 
@@ -23,6 +22,9 @@ import static android.content.ContentValues.TAG;
 
 public class MainViewModel extends ViewModel {
 
+    private String BASE_URL = "http://192.249.19.240:3080/";
+    private String uid;
+
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -30,8 +32,6 @@ public class MainViewModel extends ViewModel {
 
     private RetroApi retroApi = retrofit.create(RetroApi.class);
 
-    private String BASE_URL = "http://192.249.19.240:3080/";
-    private String uid;
 
     //this is the data that we will fetch asynchronously
     private MutableLiveData<List<Contact>> _contacts;
@@ -75,13 +75,13 @@ public class MainViewModel extends ViewModel {
     // Load all users registered on the server
     // @GET getUsers()
     private void loadUsers(){
-        Call<List<User>> call = retroApi.getUsers();
+        Call<List<MapUser>> call = retroApi.getUsers();
 
-        call.enqueue(new Callback<List<User>>() {
+        call.enqueue(new Callback<List<MapUser>>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<List<MapUser>> call, Response<List<MapUser>> response) {
                 if(response.isSuccessful()){
-                    List<User> result = response.body();
+                    List<MapUser> result = response.body();
                     Log.d(TAG, "ViewModel getUsers Succeess" + result.toString());
                 } else{
                     Log.d(TAG, "ViewModel getUsers Fail");
@@ -89,7 +89,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
+            public void onFailure(Call<List<MapUser>> call, Throwable t) {
                 Log.d(TAG, "ViewModel getUsers Fail:" + t.getMessage());
             }
         });

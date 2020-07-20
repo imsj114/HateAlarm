@@ -4,15 +4,12 @@ import android.app.ActivityManager
 import android.app.Application
 import android.app.Service
 import android.content.*
-import android.location.Location
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.madcampweek2.model.User
+import com.example.madcampweek2.model.MapUser
 import com.facebook.Profile
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.JsonObject
@@ -20,10 +17,9 @@ import io.socket.emitter.Emitter
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.Socket
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
-    val _users =  MutableLiveData<List<User>>()
+    val _users =  MutableLiveData<List<MapUser>>()
     val _locations: LiveData<List<LatLng>> = Transformations.map(_users) {
         it.map{ user -> user.toLatLng() }
     }
@@ -65,7 +61,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                 Log.i(SocketService.TAG, "(MapsViewModel) listened location update")
                 val data: String = args[0].toString()
                 val jsonArray = JSONArray(data)
-                val arr = mutableListOf<User>()
+                val arr = mutableListOf<MapUser>()
                 for(i in 0 until jsonArray.length()){
                     val jsonObject = jsonArray[i] as JSONObject
                     val lat = jsonObject.getDouble("lat")
@@ -73,7 +69,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                     val name = jsonObject.getString("name")
                     val uid = jsonObject.getString("uid")
                     if(uid != myUid){
-                        arr.add(User(lat, lng, name))
+                        arr.add(MapUser(lat, lng, name))
                     }
                 }
                 _users.postValue(arr)
@@ -170,11 +166,11 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
         _users.postValue(listOf())
     }
 
-    fun getUsers(): LiveData<List<User>> = _users
+    fun getUsers(): LiveData<List<MapUser>> = _users
     fun getLatLng(): LiveData<List<LatLng>> = _locations
     fun getMyLocation(): LiveData<LatLng?> = _myLocation
     fun getIsOnline(): LiveData<Boolean> = _isOnline
-    fun setUsers(arr: List<User>) = _users.apply{ value = arr }
+    fun setUsers(arr: List<MapUser>) = _users.apply{ value = arr }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager: ActivityManager = _application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager

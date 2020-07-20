@@ -4,9 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
-import org.json.JSONObject
 
-class User(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no name}") : Parcelable{
+class MapUser(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no name}") : Parcelable{
     constructor(parcel: Parcel) : this() {
         parcel.run{
             lat = readDouble()
@@ -21,9 +20,9 @@ class User(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.run{
-            writeDouble(this@User.lat)
-            writeDouble(this@User.lng)
-            writeString(this@User.name)
+            writeDouble(this@MapUser.lat)
+            writeDouble(this@MapUser.lng)
+            writeString(this@MapUser.name)
         }
     }
 
@@ -33,12 +32,12 @@ class User(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no
         return SphericalUtil.computeDistanceBetween(latlng, this.toLatLng())
     }
 
-    companion object CREATOR : Parcelable.Creator<User> {
-        override fun createFromParcel(parcel: Parcel): User {
-            return User(parcel)
+    companion object CREATOR : Parcelable.Creator<MapUser> {
+        override fun createFromParcel(parcel: Parcel): MapUser {
+            return MapUser(parcel)
         }
 
-        override fun newArray(size: Int): Array<User?> {
+        override fun newArray(size: Int): Array<MapUser?> {
             return arrayOfNulls(size)
         }
     }

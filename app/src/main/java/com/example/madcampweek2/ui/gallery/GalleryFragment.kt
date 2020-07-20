@@ -15,8 +15,7 @@ import java.util.*
 
 class GalleryFragment : Fragment() {
     private lateinit var recyclerView : RecyclerView
-//    private lateinit var images : MutableList<Image>
-    private val model: MainViewModel by activityViewModels()
+//    private lateinit var images : MutableList<Image>s
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +36,5 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model.getImages().observe(viewLifecycleOwner, Observer<List<Image>>{ list ->
-            (recyclerView.adapter as GalleryViewAdapter).setData(list)
-        })
     }
 }

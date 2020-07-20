@@ -1,18 +1,12 @@
 package com.example.madcampweek2.ui
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.madcampweek2.api.RetroApi
 import com.example.madcampweek2.model.Contact
-import com.example.madcampweek2.model.User
-import com.google.android.material.internal.ContextUtils.getActivity
+import com.example.madcampweek2.model.MapUser
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -39,7 +33,7 @@ class MainViewModel : ViewModel() {
 
         var retroApi = retrofit.create(RetroApi::class.java)
 
-        val call: Call<List<User>> = retroApi.users
+        val call: Call<List<MapUser>> = retroApi.users
 
 
     }

@@ -31,6 +31,4 @@ public class Contact {
     public String getProfile()  { return profile; }
 
     public void setProfile(String profile)  { this.profile = profile; }
-
-    public Image toImage() { return new Image(profile); }
 }

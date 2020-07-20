@@ -16,8 +16,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.madcampweek2.ui.MainViewModel
-import com.example.madcampweek2.model.Contact
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 public class MainActivity : AppCompatActivity(){
