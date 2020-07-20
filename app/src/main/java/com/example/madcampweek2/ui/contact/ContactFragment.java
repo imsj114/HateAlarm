@@ -19,11 +19,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.madcampweek2.MainViewModel;
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
-import com.example.madcampweek2.model.MapUser;
+import com.example.madcampweek2.model.User;
+import com.facebook.Profile;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -45,8 +45,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
-    MainViewModel mainViewModel;
-    private RecyclerAdapter adapter;
+    ContactViewModel contactViewModel;
+    private RecyclerAdapter adapter = new RecyclerAdapter(getActivity());;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
     private Animation fab_open, fab_close;
@@ -55,6 +55,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private ArrayList<Contact> jsonphoneBook, devicephoneBook;
 
     private String BASE_URL = "http://192.249.19.240:3080/";
+    private String profileId = Profile.getCurrentProfile().getId();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         // RecyclerView setting
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         ContactView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerAdapter();
+        adapter = new RecyclerAdapter(getActivity());
         ContactView.setAdapter(adapter);
 
         /*
@@ -105,8 +106,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        mainViewModel.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
+        contactViewModel = new ViewModelProvider(requireActivity()).get(ContactViewModel.class);
+        contactViewModel.getContacts().observe(getViewLifecycleOwner(), new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> _contacts) {
                 adapter.setData(_contacts);
@@ -123,13 +124,13 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fab_sub1:
                 switchFab();
-                Toast.makeText(getActivity(), "Type Uid for contacts list", Toast.LENGTH_SHORT).show();
-                getUidInput();
+                Toast.makeText(getActivity(), "Relaod your contacts", Toast.LENGTH_SHORT).show();
+                contactViewModel.ReloadContacts(profileId);
                 break;
             case R.id.fab_sub2:
                 switchFab();
                 Toast.makeText(getActivity(), "Add contact", Toast.LENGTH_SHORT).show();
-                addContact();
+                FabaddContact();
                 break;
         }
     }
@@ -159,37 +160,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    public void getUidInput(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_getuid, null);
-        builder.setView(view);
 
-        final Button cancel = (Button) view.findViewById(R.id.buttonCancel);
-        final Button reload = (Button) view.findViewById(R.id.buttonReload);
-        final EditText editTextUid = (EditText) view.findViewById(R.id.editTextUid);
-
-        final AlertDialog dialog = builder.create();
-
-        cancel.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        reload.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String strUid = editTextUid.getText().toString();
-                mainViewModel.setUid(strUid);
-                Toast.makeText(getApplicationContext(), "Your Uid: "+strUid, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
-    public void addContact(){
+    public void FabaddContact(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_contact, null);
@@ -218,9 +190,10 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                     Toast.makeText(getApplicationContext()
                             , "Type infomation for new contact", Toast.LENGTH_SHORT).show();
                 } else{
-                    /*
-                    *  Add contact to server
-                    */
+                    Contact new_contact = new Contact();
+                    new_contact.setName(strName);
+                    new_contact.setPhoneNumber(strPhone);
+                    contactViewModel.addContact(new_contact);
                     Toast.makeText(getApplicationContext()
                             , "Name: "+ strName+ "\nPhonenumber: "+ strPhone
                             , Toast.LENGTH_LONG).show();
@@ -240,7 +213,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         try {   // Open and load json file
             InputStream is = getActivity().getAssets().open(filename);
             int fileSize = is.available();
-
             byte[] buffer = new byte[fileSize];
             is.read(buffer);
             is.close();
@@ -253,15 +225,12 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
         try{    // json data parsing
             JSONObject jsonObject = new JSONObject(json);
-
             JSONArray contactArray = jsonObject.getJSONArray("Contacts");
 
             for(int i=0; i<contactArray.length(); i++)
             {
                 JSONObject contactObject = contactArray.getJSONObject(i);
-
                 Contact contact = new Contact();
-
                 contact.setName(contactObject.getString("NAME"));
                 contact.setPhoneNumber(contactObject.getString("PHONE"));
 //                contact.setProfile(getResources().getIdentifier(
@@ -295,14 +264,14 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    public void postUserContacts(RetroApi retroApi, MapUser mapUser){
-        Call<MapUser> call = retroApi.registerUser(mapUser);
+    public void postUserContacts(RetroApi retroApi, User User){
+        Call<User> call = retroApi.registerUser(User);
 
-        call.enqueue(new Callback<MapUser>() {
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<MapUser> call, Response<MapUser> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if(response.isSuccessful()){
-                    MapUser result = response.body();
+                    User result = response.body();
                     Toast.makeText(getActivity()
                             ,"registerUser Succeess\n Result:" + result.toString(),
                             Toast.LENGTH_LONG ).show();
@@ -315,7 +284,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             }
 
             @Override
-            public void onFailure(Call<MapUser> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getActivity()
                         ,"registerUser Fail: " + t.getMessage(), Toast.LENGTH_LONG ).show();
                 Log.d(TAG, "registerUser Fail:" +t.getMessage());

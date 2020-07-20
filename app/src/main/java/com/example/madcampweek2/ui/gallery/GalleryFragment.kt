@@ -3,14 +3,9 @@ package com.example.madcampweek2.ui.gallery
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.lifecycle.Observer
 import com.example.madcampweek2.R
-import com.example.madcampweek2.model.Image
-import com.example.madcampweek2.ui.MainViewModel
-import java.util.*
 
 
 class GalleryFragment : Fragment() {
