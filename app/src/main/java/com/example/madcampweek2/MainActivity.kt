@@ -1,6 +1,5 @@
 package com.example.madcampweek2
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -10,21 +9,19 @@ import androidx.activity.viewModels
 //import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBarDrawerToggle
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.madcampweek2.ui.MainViewModel
 import com.example.madcampweek2.model.Contact
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-public class MainActivity : AppCompatActivity(), View.OnClickListener {
+public class MainActivity : AppCompatActivity(){
 
     private val READ_CONTACTS_PERMISSON = 1
     val viewModel : MainViewModel by viewModels()
@@ -43,10 +40,7 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val button = findViewById<Button>(R.id.button_test)
-        button.setOnClickListener(this)
-
-        getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
+        //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
 
     }
 
@@ -81,20 +75,5 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
                 )
             }
         }
-    }
-
-    override fun onClick(p0: View?) {
-        viewModel._contacts.value = listOf(
-            Contact().apply{
-                name = "Ryan"
-                phoneNumber = "010-1234-5678"
-                profile = R.drawable.ryan
-            },
-            Contact().apply{
-                name = "Apeach"
-                phoneNumber = "010-5678-1234"
-                profile = R.drawable.apeach
-            }
-        )
     }
 }
