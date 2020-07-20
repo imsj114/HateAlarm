@@ -3,11 +3,9 @@ package com.example.madcampweek2
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.viewModels
 //import com.google.android.material.bottomnavigation.BottomNavigationView
-import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +17,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.madcampweek2.ui.MainViewModel
 import com.example.madcampweek2.model.Contact
+import com.facebook.Profile
+import com.bumptech.glide.Glide
+import com.example.madcampweek2.model.Image
 
 
 public class MainActivity : AppCompatActivity(){
@@ -41,6 +42,17 @@ public class MainActivity : AppCompatActivity(){
         navView.setupWithNavController(navController)
 
         //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
+        val login_status = findViewById<TextView>(R.id.login_status)
+        val user_image = findViewById<ImageView>(R.id.user_image)
+        val user_name = findViewById<TextView>(R.id.user_id)
+        login_status.setText("Login Status")
+        Glide.with(this)
+            .load(Profile.getCurrentProfile()?.getProfilePictureUri(250,250))
+//            .fitCenter()
+            .override(350, 350)
+            .placeholder(R.drawable.image_load)
+            .into(user_image)
+        user_name.setText(Profile.getCurrentProfile()?.lastName + Profile.getCurrentProfile()?.firstName)
 
     }
 

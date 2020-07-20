@@ -3,6 +3,8 @@ package com.example.madcampweek2.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.madcampweek2.MainActivity
 import com.example.madcampweek2.R
@@ -32,6 +34,8 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, Profile.getCurrentProfile()?.toString() ?: "none")
                 Log.d(TAG, Profile.getCurrentProfile()?.id ?: "none")
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+
+
                 finish()
             }
             override fun onCancel() {

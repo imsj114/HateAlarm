@@ -1,9 +1,12 @@
 package com.example.madcampweek2.ui.maps
 
 import android.Manifest
-import android.content.*
+import android.content.ComponentName
+import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -63,6 +66,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
     var isBound = false
     var isTrackingMode = false
     var myLastLocation: LatLng? = null
+    var mediaPlayer: MediaPlayer? = null
 
     private val model: MapsViewModel by activityViewModels()
 
@@ -80,6 +84,8 @@ class MapsFragment : Fragment() , View.OnClickListener{
                     val r= it.getDistanceFrom(myLastLocation!!)
                     if( r < ALERT_RADIUS) {
                         Snackbar.make(activity?.findViewById(R.id.nav_host_fragment)!!, "ALERT!! distance: $r", Snackbar.LENGTH_SHORT).show()
+                        mediaPlayer = MediaPlayer.create(activity, R.raw.siren)
+                        mediaPlayer!!.start()
                     }
                 }
             }
