@@ -1,5 +1,6 @@
 package com.example.madcampweek2
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.madcampweek2.ui.MainViewModel
 import com.example.madcampweek2.model.Contact
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 public class MainActivity : AppCompatActivity(){
@@ -26,7 +28,6 @@ public class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
@@ -73,4 +74,11 @@ public class MainActivity : AppCompatActivity(){
             }
         }
     }
+
+//    override fun onClick(p0: View?) {
+////        viewModel._contacts.value = listOf(
+////            Contact(),
+////            Contact()
+////        )
+////    }
 }

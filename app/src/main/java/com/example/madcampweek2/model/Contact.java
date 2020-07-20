@@ -1,9 +1,16 @@
 package com.example.madcampweek2.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Contact {
+    @SerializedName("phoneNumber")
     private String phoneNumber;
+
+    @SerializedName("name")
     private String name;
-    private int profile;
+
+    @SerializedName("image")
+    private String profile;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -21,9 +28,9 @@ public class Contact {
         this.name = name;
     }
 
-    public int getProfile()  { return profile; }
+    public String getProfile()  { return profile; }
 
-    public void setProfile(int profile)  { this.profile = profile; }
+    public void setProfile(String profile)  { this.profile = profile; }
 
     public Image toImage() { return new Image(profile); }
 }
