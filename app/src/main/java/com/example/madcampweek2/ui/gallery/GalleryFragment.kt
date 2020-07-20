@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madcampweek2.R
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 
 class GalleryFragment : Fragment() {
