@@ -130,6 +130,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             }
             socketService.sendMessage("online", jsonObject!!)
             socketService.sendMessage("get_blacklist", "")
+            socketService.sendMessage("location_request", "")
         }
         override fun onServiceDisconnected(arg0: ComponentName) {
             socketBound = false
@@ -229,10 +230,12 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     fun addBlacklist(uid: String) = run {
         socketService.sendMessage("add_blacklist", uid)
         socketService.sendMessage("get_blacklist", "")
+        socketService.sendMessage("location_request", "")
     }
     fun removeBlacklist(uid: String) = run {
         socketService.sendMessage("remove_blacklist", uid)
         socketService.sendMessage("get_blacklist", "")
+        socketService.sendMessage("location_request", "")
     }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
