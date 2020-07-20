@@ -5,7 +5,8 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
 
-class MapUser(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "{no name}") : Parcelable{
+class MapUser(var lat: Double = 0.0, var lng: Double = 0.0, var uid: String = "", var name: String = "{no name}",
+              var imageURI: String = "", var blocked: Boolean = false, var online: Boolean = false) : Parcelable{
     constructor(parcel: Parcel) : this() {
         parcel.run{
             lat = readDouble()
@@ -13,6 +14,8 @@ class MapUser(var lat: Double = 0.0, var lng: Double = 0.0, var name: String = "
             name = readString() ?: "{no name}"
         }
     }
+
+    val profileURI = ""
 
     fun toLatLng() : LatLng{
         return LatLng(lat, lng)

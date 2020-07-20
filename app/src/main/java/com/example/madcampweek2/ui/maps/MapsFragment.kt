@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.madcampweek2.R
 import com.example.madcampweek2.model.MapUser
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
@@ -75,8 +78,18 @@ class MapsFragment : Fragment() , View.OnClickListener{
             list.map{
                 mMap!!.addMarker(MarkerOptions().apply {
                     position(it.toLatLng())
+                    title(it.name)
+                    //if(!it.blocked) icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                    if(it.blocked){
+                        if(it.online) icon(BitmapDescriptorFactory.fromResource(R.drawable.onlinehulkdiv3))
+                        else icon(BitmapDescriptorFactory.fromResource(R.drawable.offlinhulkdiv3))
+                    }else{
+                        if(it.online) icon(BitmapDescriptorFactory.fromResource(R.drawable.onlineironmandiv3))
+                        else icon(BitmapDescriptorFactory.fromResource(R.drawable.offlineironmandiv3))
+                    }
+
                 })
-                if(myLastLocation != null){
+                if(myLastLocation != null && it.blocked && it.online){
                     val r= it.getDistanceFrom(myLastLocation!!)
                     if( r < ALERT_RADIUS) {
                         Snackbar.make(activity?.findViewById(R.id.nav_host_fragment)!!, "ALERT!! distance: $r", Snackbar.LENGTH_SHORT).show()
@@ -169,8 +182,8 @@ class MapsFragment : Fragment() , View.OnClickListener{
             }
             R.id.fab_map2 -> {
                 switchFab()
-                model.setUsers(listOf<MapUser>(MapUser(), MapUser()))
-                //sp.edit().putBoolean("isTrackingMode", false).apply()
+                //model.removeBlacklist("test_uid")
+                findNavController().navigate(R.id.navigation_user_list)
             }
         }
     }
