@@ -69,14 +69,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         setJSONcontacts(adapter, "contacts.json");  // Load contact data from contacts.json
         //setDeviceContacts(adapter);     // Load the user's contact list
         adapter.notifyDataSetChanged(); // Notify the adapter data modification
-
-        TextView login_status = getActivity().findViewById(R.id.login_status);
-        ImageView user_image = getActivity().findViewById(R.id.user_image);
-        TextView user_name = getActivity().findViewById(R.id.user_id);
-                login_status.setText("Login Status");
-
-
-
         return root;
     }
 

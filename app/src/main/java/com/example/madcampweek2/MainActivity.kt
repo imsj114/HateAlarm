@@ -55,7 +55,7 @@ public class MainActivity : AppCompatActivity(){
         val login_status = findViewById<TextView>(R.id.login_status)
         val user_image = findViewById<ImageView>(R.id.user_image)
         val user_name = findViewById<TextView>(R.id.user_id)
-        login_status.setText("Login Status")
+        login_status.setText("User Profile")
         var mProfileTracker: ProfileTracker? = null
         if (Profile.getCurrentProfile() == null) {
             mProfileTracker = object : ProfileTracker() {
@@ -67,8 +67,9 @@ public class MainActivity : AppCompatActivity(){
                     mProfileTracker?.stopTracking()
                     Glide.with(this@MainActivity)
                         .load(Profile.getCurrentProfile()?.getProfilePictureUri(300,300))
+                        .circleCrop()
                         .fitCenter()
-                        .override(400, 400)
+                        .override(300, 300)
                         .placeholder(R.drawable.image_load)
                         .into(user_image)
                     user_name.setText(Profile.getCurrentProfile()!!.lastName + Profile.getCurrentProfile()!!.firstName)
@@ -81,6 +82,7 @@ public class MainActivity : AppCompatActivity(){
             Log.v("facebook - profile", profile.firstName)
             Glide.with(this)
                 .load(Profile.getCurrentProfile()?.getProfilePictureUri(300,300))
+                .circleCrop()
                 .fitCenter()
                 .override(400, 400)
                 .placeholder(R.drawable.image_load)
