@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,14 +16,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.example.madcampweek2.MainActivity;
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.ui.MainViewModel;
+import com.facebook.Profile;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,6 +69,13 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         setJSONcontacts(adapter, "contacts.json");  // Load contact data from contacts.json
         //setDeviceContacts(adapter);     // Load the user's contact list
         adapter.notifyDataSetChanged(); // Notify the adapter data modification
+
+        TextView login_status = getActivity().findViewById(R.id.login_status);
+        ImageView user_image = getActivity().findViewById(R.id.user_image);
+        TextView user_name = getActivity().findViewById(R.id.user_id);
+                login_status.setText("Login Status");
+
+
 
         return root;
     }
