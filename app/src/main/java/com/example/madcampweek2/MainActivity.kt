@@ -15,13 +15,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.madcampweek2.ui.MainViewModel
 
 
 public class MainActivity : AppCompatActivity(){
 
     private val READ_CONTACTS_PERMISSON = 1
-    val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,10 +71,4 @@ public class MainActivity : AppCompatActivity(){
         }
     }
 
-//    override fun onClick(p0: View?) {
-////        viewModel._contacts.value = listOf(
-////            Contact(),
-////            Contact()
-////        )
-////    }
 }
