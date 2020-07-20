@@ -1,4 +1,4 @@
-package com.example.madcampweek2.ui;
+package com.example.madcampweek2.ui.contact;
 
 import android.util.Log;
 

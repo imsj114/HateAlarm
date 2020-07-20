@@ -22,6 +22,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     // Data(Contact class) list for adapter
     private List<Contact> listData = new ArrayList<>();
+    private Context adapterContext;
+
+    public RecyclerAdapter(Context adapterContext){
+        this.adapterContext = adapterContext;
+    }
 
     @NonNull
     @Override
@@ -72,11 +77,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         void onBind(Contact data) {
             textView1.setText(data.getName());
             textView2.setText(data.getPhoneNumber());
-            imageView.setImageResource(R.drawable.angmond);
+//            imageView.setImageResource(R.drawable.angmond);
 //
-//            Glide.with(adapterContext)
-//                .load(data.getProfile())
-//                .into(holder.imageView);
+            Glide.with(adapterContext)
+                .load("http://192.249.19.240:3080/api/images/get/frodo.png")
+                .into(imageView);
         }
     }
 }

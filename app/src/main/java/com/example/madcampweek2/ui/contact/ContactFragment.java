@@ -23,7 +23,6 @@ import com.example.madcampweek2.R;
 import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.model.User;
-import com.example.madcampweek2.ui.ContactViewModel;
 import com.facebook.Profile;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -47,7 +46,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class ContactFragment extends Fragment implements View.OnClickListener{
 
     ContactViewModel contactViewModel;
-    private RecyclerAdapter adapter;
+    private RecyclerAdapter adapter = new RecyclerAdapter(getActivity());;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
     private Animation fab_open, fab_close;
@@ -80,7 +79,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         // RecyclerView setting
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         ContactView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerAdapter();
+        adapter = new RecyclerAdapter(getActivity());
         ContactView.setAdapter(adapter);
 
         /*
