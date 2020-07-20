@@ -24,7 +24,7 @@ import static android.content.ContentValues.TAG;
 public class ContactViewModel extends ViewModel {
 
     private String BASE_URL = "http://192.249.19.240:3080/";
-    private String profileId = Profile.getCurrentProfile().getId();
+    private String profileId;
 
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -33,6 +33,8 @@ public class ContactViewModel extends ViewModel {
 
     private RetroApi retroApi = retrofit.create(RetroApi.class);
 
+
+    public void setPid(String pid){this.profileId = pid;}
 
     //this is the data that we will fetch asynchronously
     private MutableLiveData<List<Contact>> _contacts;
