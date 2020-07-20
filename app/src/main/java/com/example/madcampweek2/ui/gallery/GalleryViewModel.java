@@ -1,6 +1,7 @@
 package com.example.madcampweek2.ui.gallery;
 
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -132,9 +133,9 @@ public class GalleryViewModel extends ViewModel {
 
 
 
-    public void addImage(String path){
+    public void addImage(File file){
 
-        File file = new File(path);
+
 
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
