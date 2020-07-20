@@ -15,16 +15,17 @@
     android:background="@drawable/splash_back_circle">
 
     <TextView
+        android:id="@+id/splash_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="108dp"
+        android:fontFamily="@font/fung"
         android:gravity="center"
-        android:id="@+id/splash_text"
         android:text="@string/splash_text"
-        android:textColor="@android:color/white"
-        android:fontFamily="@font/flowerroad"
-        android:textSize="44sp"/>
+        android:textColor="#c7bfce"
+        android:textSize="55sp" />
+
 
     <ImageView
         android:layout_width="60dp"

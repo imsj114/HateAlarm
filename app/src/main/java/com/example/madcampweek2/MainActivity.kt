@@ -1,12 +1,13 @@
 package com.example.madcampweek2
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.material.bottomnavigation.BottomNavigationView
+//import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -38,14 +39,14 @@ public class MainActivity : AppCompatActivity(), View.OnClickListener {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_contact, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_gallery, R.id.navigation_map))
+                R.id.navigation_contact, R.id.navigation_gallery, R.id.navigation_map))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         val button = findViewById<Button>(R.id.button_test)
         button.setOnClickListener(this)
 
-        //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
+        getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
 
     }
 

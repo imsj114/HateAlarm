@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFF3F3F4"
-    android:paddingBottom="64dp"
+    android:background="#dcdbe1"
     app:layout_constraintTop_toTopOf="@+id/container"
     tools:context=".ui.contact.ContactFragment">
 
