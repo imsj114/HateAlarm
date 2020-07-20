@@ -63,7 +63,7 @@
         <ImageView android:id="@+id/profile_map_user"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/hulk_icon0"
             tools:ignore="VectorDrawableCompat" />
 
         <LinearLayout
