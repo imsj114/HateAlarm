@@ -18,6 +18,8 @@ class UserListViewAdapter(val context: Context, val userList: List<MapUser>) : R
         private val imageView : ImageView = itemView.findViewById<ImageView>(R.id.profile_map_user)
         private val nameTextView: TextView = itemView.findViewById(R.id.name_map_user)
         private val blockedTextView: TextView = itemView.findViewById(R.id.blocked_map_user)
+        private val deleteImageView: ImageView = itemView.findViewById(R.id.img_delete)
+
         fun bind(user : MapUser){
             Glide.with(context)
                 .load(if(user.imageURI != "") user.imageURI else R.drawable.apeach)
@@ -26,6 +28,7 @@ class UserListViewAdapter(val context: Context, val userList: List<MapUser>) : R
                 .into(imageView)
             nameTextView.text = user.name
             blockedTextView.text = if(user.blocked) "손절" else "아직 친구"
+            deleteImageView.setImageResource(if(user.blocked) R.drawable.ic_baseline_add_circle_24 else R.drawable.ic_baseline_remove_circle_24)
         }
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -50,6 +51,37 @@ class UserListFragment : Fragment() {
                 adapter = UserListViewAdapter(context, list)
             }
         })
+
+        val touchListener = RecyclerTouchListener(requireActivity(), recyclerView)
+        touchListener.setClickable(object: RecyclerTouchListener.OnRowClickListener {
+            override fun onRowClicked(position: Int) {
+                //Toast.makeText(requireContext().applicationContext, "pos $position", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onIndependentViewClicked(independentViewID: Int, position: Int) {
+
+            }
+
+        }).setSwipeOptionViews(R.id.delete_task)
+            .setSwipeable(R.id.rowFG, R.id.rowBG, object:RecyclerTouchListener.OnSwipeOptionsClickListener{
+                override fun onSwipeOptionClicked(viewID: Int, position: Int) {
+                    when(viewID) {
+                        R.id.delete_task -> {
+                            //Toast.makeText(requireContext().applicationContext, "delete", Toast.LENGTH_SHORT).show()
+                            val user = (recyclerView.adapter as UserListViewAdapter).userList[position]
+                            val uid = user.uid
+                            if(user.blocked){
+                                model.removeBlacklist(uid)
+                            }else{
+                                model.addBlacklist(uid)
+                            }
+                        }
+                    }
+                }
+
+            })
+        recyclerView.addOnItemTouchListener(touchListener)
+
 
         return view
     }

@@ -226,8 +226,14 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     fun getIsOnline(): LiveData<Boolean> = _isOnline
     fun setUsers(arr: List<MapUser>) = _users.apply{ value = arr }
 
-    fun addBlacklist(uid: String) = socketService.sendMessage("add_blacklist", uid)
-    fun removeBlacklist(uid: String) = socketService.sendMessage("remove_blacklist", uid)
+    fun addBlacklist(uid: String) = run {
+        socketService.sendMessage("add_blacklist", uid)
+        socketService.sendMessage("get_blacklist", "")
+    }
+    fun removeBlacklist(uid: String) = run {
+        socketService.sendMessage("remove_blacklist", uid)
+        socketService.sendMessage("get_blacklist", "")
+    }
 
     private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
         val manager: ActivityManager = _application.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
