@@ -145,10 +145,6 @@ public class GalleryViewModel extends ViewModel {
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
-//        // add another part within the multipart request
-//        RequestBody fullName =
-//                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
-
         Call<String> call = retroApi.addImage(Profile.getCurrentProfile().getId(), body);
 
         call.enqueue(new Callback<String>() {
@@ -167,6 +163,29 @@ public class GalleryViewModel extends ViewModel {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d(TAG, "ViewModel addImage Fail:" + t.getMessage());
+            }
+        });
+    }
+
+    public void deleteImage(String uid, int pos){
+        String filename = _Images.getValue().get(pos).getFilename();
+        Call<String> call = retroApi.deleteImage(uid, filename);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                    String result = response.body();
+                    Log.d(TAG, "ViewModel delete Succeess: " + result);
+                    loadImages(uid);
+                } else{
+                    Log.d(TAG, "ViewModel delete Fail");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "ViewModel delete Fail:" + t.getMessage());
             }
         });
     }

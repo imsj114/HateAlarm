@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.madcampweek2.R
 import com.example.madcampweek2.model.Image
 import com.facebook.Profile
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.*
 import java.text.SimpleDateFormat
@@ -47,6 +48,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     private lateinit var recyclerView : RecyclerView
     private val galleryViewModel : GalleryViewModel by activityViewModels()
     private lateinit var adapter : GalleryViewAdapter
+    private lateinit var img_paths : MutableList<String>
 
     lateinit var fab_open : Animation
     lateinit var fab_close : Animation
@@ -58,6 +60,19 @@ class GalleryFragment : Fragment(), View.OnClickListener {
 
     private lateinit var profileId: String
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+        img_paths = mutableListOf<String>()
+
+        val imgDir = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        imgDir.list()?.forEach{
+            img_paths.add(imgDir.toString() + File.separator + it)
+            Log.d("ImgPath", img_paths[img_paths.size-1])
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater
                               , container: ViewGroup?
                               , savedInstanceState: Bundle?
@@ -67,7 +82,10 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.apply{
             layoutManager = GridLayoutManager(activity, 2)
-            adapter = GalleryViewAdapter(context, mutableListOf())
+            adapter = GalleryViewAdapter(context, mutableListOf()){
+                askRemove(it)
+                true
+            }
         }
 
         recyclerView.addItemDecoration(SpacesItemDecoration(
@@ -87,6 +105,22 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         fab2.setOnClickListener(this)
 
         return view
+    }
+
+    private fun askRemove(position: Int) {
+        val items = arrayOf("삭제")
+        MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
+            .setItems(items) { dialog, which ->
+                // Respond to item chosen
+                when(which) {
+                    0 -> {
+                        galleryViewModel.deleteImage(profileId, position)
+                        Toast.makeText(requireContext(),"Image deleted!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .show()
+
     }
 
     override fun onViewCreated(view: View

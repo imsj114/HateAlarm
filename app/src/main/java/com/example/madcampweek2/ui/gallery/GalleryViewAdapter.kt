@@ -10,10 +10,10 @@ import com.bumptech.glide.Glide
 import com.example.madcampweek2.R
 import com.example.madcampweek2.model.Image
 
-class GalleryViewAdapter(private val context : Context, private var imageList: MutableList<Image>)
+class GalleryViewAdapter(private val context : Context, private var imageList: MutableList<Image>, val itemLongClick: (Int) -> Boolean)
     : RecyclerView.Adapter<GalleryViewAdapter.Holder>() {
 
-    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class Holder(itemView: View, itemLongClick: (Int) -> Boolean) : RecyclerView.ViewHolder(itemView) {
         private val imageView : ImageView = itemView.findViewById<ImageView>(R.id.id_image)
 
         fun bind(img : Image, position : Int){
@@ -23,12 +23,13 @@ class GalleryViewAdapter(private val context : Context, private var imageList: M
                 .override(300, 300)
                 .placeholder(R.drawable.image_load)
                 .into(imageView)
+            imageView.setOnLongClickListener{ itemLongClick(position) }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
-        return Holder(view)
+        return Holder(view, itemLongClick)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
