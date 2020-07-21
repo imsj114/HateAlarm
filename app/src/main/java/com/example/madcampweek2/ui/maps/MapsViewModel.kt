@@ -226,6 +226,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     fun getMyLocation(): LiveData<LatLng?> = _myLocation
     fun getIsOnline(): LiveData<Boolean> = _isOnline
     fun setUsers(arr: List<MapUser>) = _users.apply{ value = arr }
+    fun getBlacklist(): LiveData<List<String>> = _blacklist
 
     fun addBlacklist(uid: String) = run {
         socketService.sendMessage("add_blacklist", uid)

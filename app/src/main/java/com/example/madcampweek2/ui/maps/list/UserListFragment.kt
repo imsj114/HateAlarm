@@ -25,6 +25,8 @@ class UserListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private val model: MapsViewModel by activityViewModels()
+    private var lastList: List<MapUser> = listOf()
+    private var triggered: Boolean = false
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
@@ -43,13 +45,19 @@ class UserListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.user_list)
         recyclerView.apply{
             layoutManager = LinearLayoutManager(context)
-            adapter = UserListViewAdapter(context, mutableListOf())
+            adapter = UserListViewAdapter(context, model._users_blacklist.value!!)
         }
 
+        model.getBlacklist().observe(viewLifecycleOwner, Observer {
+            triggered = true
+        })
+
         model.getUsers().observe(viewLifecycleOwner, Observer<List<MapUser>>{ list ->
-            recyclerView.apply{
-                adapter = UserListViewAdapter(context, list)
+            if(triggered){
+                updateList(list)
+                triggered = false
             }
+
         })
 
         val touchListener = RecyclerTouchListener(requireActivity(), recyclerView)
@@ -84,5 +92,11 @@ class UserListFragment : Fragment() {
 
 
         return view
+    }
+
+    private fun updateList(list: List<MapUser>) {
+        recyclerView.apply{
+            adapter = UserListViewAdapter(context, list)
+        }
     }
 }
