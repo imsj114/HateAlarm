@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GalleryViewModel extends ViewModel {
 
-    private String BASE_URL = "http://192.249.19.240:3080/";
+    private String BASE_URL = "http://192.249.19.243:880/";
     private String profileId;
     private String TAG = "TAG";
 
@@ -45,7 +45,7 @@ public class GalleryViewModel extends ViewModel {
     //we will call this method to get the data
     public LiveData<List<Image>> getImages() {
         //if the list is null
-        if (_Images == null) {
+            if (_Images == null) {
             _Images = new MutableLiveData<List<Image>>();
             //we will load it asynchronously from server in this method
             loadImages(profileId);
@@ -136,7 +136,6 @@ public class GalleryViewModel extends ViewModel {
     public void addImage(File file){
 
 
-
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
@@ -144,9 +143,9 @@ public class GalleryViewModel extends ViewModel {
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("image", file.getName(), requestFile);
 
-        // add another part within the multipart request
-        RequestBody fullName =
-                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
+//        // add another part within the multipart request
+//        RequestBody fullName =
+//                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
 
         Call<String> call = retroApi.addImage(Profile.getCurrentProfile().getId(), body);
 
