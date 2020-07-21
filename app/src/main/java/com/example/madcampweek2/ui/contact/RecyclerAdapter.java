@@ -24,11 +24,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     // Data(Contact class) list for adapter
     private List<Contact> listData = new ArrayList<>();
     private Context adapterContext;
-    AdapterView.OnItemClickListener onItemClickListener;
+    AdapterView.OnItemLongClickListener onItemLongClickListener;
 
-    public RecyclerAdapter(Context adapterContext, AdapterView.OnItemClickListener onItemClickListener){
+    public RecyclerAdapter(Context adapterContext, AdapterView.OnItemLongClickListener onItemLongClickListener){
         this.adapterContext = adapterContext;
-        this.onItemClickListener = onItemClickListener;
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 
     @NonNull
@@ -80,12 +80,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView2 = itemView.findViewById(R.id.phone);
             imageView = itemView.findViewById(R.id.profile);
 
-            itemView.setOnClickListener(this);
+            imageView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            onItemClickListener.onItemClick(null, view, getAdapterPosition(), view.getId());
+            onItemLongClickListener.onItemLongClick(null, view, getAdapterPosition(), view.getId());
         }
 
         void onBind(Contact data) {
@@ -94,7 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 //            imageView.setImageResource(R.drawable.angmond);
 //
             Glide.with(adapterContext)
-                .load("http://192.249.19.240:3080/api/images/get/frodo.png")
+                .load("http://192.249.19.240:3080/api/images/get/scappy.png")
                 .into(imageView);
         }
 

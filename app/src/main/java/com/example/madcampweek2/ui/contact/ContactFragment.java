@@ -1,5 +1,6 @@
 package com.example.madcampweek2.ui.contact;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,20 +23,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.madcampweek2.R;
 import com.example.madcampweek2.model.Contact;
+import com.example.madcampweek2.ui.gallery.GalleryViewModel;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class ContactFragment extends Fragment
-        implements View.OnClickListener, AdapterView.OnItemClickListener{
+        implements View.OnClickListener, AdapterView.OnItemLongClickListener{
 
     ContactViewModel contactViewModel;
+    GalleryViewModel galleryViewModel;
     private RecyclerAdapter adapter = new RecyclerAdapter(getActivity(), this);;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
@@ -74,13 +78,24 @@ public class ContactFragment extends Fragment
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //you can get the clicked item from the adapter using its position
-        Contact item = adapter.getItem(position);
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Contact item = adapter.getItem(i);
 
-        // Something to do
-        Toast.makeText(getActivity(), "item clicked!!", Toast.LENGTH_LONG).show();
-        Log.d(TAG, "item clicked!!!");
+        List<String> list = new ArrayList<String>();
+        list.add("Update profile image");
+
+        final CharSequence[] items = list.toArray(new CharSequence[list.size()]);
+
+        AlertDialog builder = new MaterialAlertDialogBuilder(getActivity(), R.style.AlertDialogTheme)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getActivity(), "땡! 다음 기회에~~ෆ\n₍₍ ◝(・ω・)◟ ⁾⁾", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+
+        return false;
     }
 
 
