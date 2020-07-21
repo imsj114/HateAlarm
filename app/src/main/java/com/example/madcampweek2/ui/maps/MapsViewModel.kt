@@ -130,7 +130,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
             }
             socketService.sendMessage("online", jsonObject!!)
             socketService.sendMessage("get_blacklist", "")
-            socketService.sendMessage("location_request", "")
+            //socketService.sendMessage("location_request", "")
         }
         override fun onServiceDisconnected(arg0: ComponentName) {
             socketBound = false
