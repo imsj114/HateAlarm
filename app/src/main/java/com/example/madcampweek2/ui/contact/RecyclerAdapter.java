@@ -94,7 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 //            imageView.setImageResource(R.drawable.angmond);
 //
             Glide.with(adapterContext)
-                .load("http://192.249.19.240:3080/api/images/get/frodo.png")
+                .load("http://192.249.19.240:3080/api/images/get/scappy.png")
                 .into(imageView);
         }
 
