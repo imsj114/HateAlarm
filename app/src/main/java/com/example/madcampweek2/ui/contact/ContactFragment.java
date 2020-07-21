@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -44,10 +45,11 @@ import static android.content.ContentValues.TAG;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class ContactFragment extends Fragment implements View.OnClickListener{
+public class ContactFragment extends Fragment
+        implements View.OnClickListener, AdapterView.OnItemClickListener{
 
     ContactViewModel contactViewModel;
-    private RecyclerAdapter adapter = new RecyclerAdapter(getActivity());;
+    private RecyclerAdapter adapter = new RecyclerAdapter(getActivity(), this);;
 
     private FloatingActionButton fab_main, fab_sub1, fab_sub2;
     private Animation fab_open, fab_close;
@@ -80,7 +82,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         // RecyclerView setting
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         ContactView.setLayoutManager(linearLayoutManager);
-        adapter = new RecyclerAdapter(getActivity());
+        adapter = new RecyclerAdapter(getActivity(), this);
         ContactView.setAdapter(adapter);
 
         /*
@@ -93,16 +95,20 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         setDeviceContacts(adapter, devicephoneBook);
          */
 
-        // test용~
-//        Contact con1 = new Contact();
-//        con1.setName("only");
-//        con1.setPhoneNumber("102013123");
-//
-//        adapter.addItem(con1);
-//        adapter.notifyDataSetChanged();
 
         return root;
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        //you can get the clicked item from the adapter using its position
+        Contact item = adapter.getItem(position);
+
+        // Something to do
+        Toast.makeText(getActivity(), "item clicked!!", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "item clicked!!!");
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,9 +24,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
     // Data(Contact class) list for adapter
     private List<Contact> listData = new ArrayList<>();
     private Context adapterContext;
+    AdapterView.OnItemClickListener onItemClickListener;
 
-    public RecyclerAdapter(Context adapterContext){
+    public RecyclerAdapter(Context adapterContext, AdapterView.OnItemClickListener onItemClickListener){
         this.adapterContext = adapterContext;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -49,6 +52,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return listData.size();
     }
 
+    public Contact getItem(int pos){
+        return listData.get(pos);
+    }
+
     void addItem(Contact data) {
         listData.add(data);
     }
@@ -60,7 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
     // ViewHolder of RecyclerView
     // Setting subViews consisting the ItemView
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView textView1;
         private TextView textView2;
@@ -72,6 +79,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView1 = itemView.findViewById(R.id.name);
             textView2 = itemView.findViewById(R.id.phone);
             imageView = itemView.findViewById(R.id.profile);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            onItemClickListener.onItemClick(null, view, getAdapterPosition(), view.getId());
         }
 
         void onBind(Contact data) {
@@ -83,5 +97,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
                 .load("http://192.249.19.240:3080/api/images/get/frodo.png")
                 .into(imageView);
         }
+
+
     }
 }
