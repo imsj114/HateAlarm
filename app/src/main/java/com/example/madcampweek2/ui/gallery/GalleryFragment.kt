@@ -1,9 +1,15 @@
 package com.example.madcampweek2.ui.gallery
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +19,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -26,10 +33,14 @@ import com.facebook.FacebookSdk
 import com.facebook.Profile
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.*
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class GalleryFragment : Fragment(), View.OnClickListener {
 
+    private val REQUEST_IMAGE_CAPTURE = 1
     private lateinit var recyclerView : RecyclerView
     private val galleryViewModel : GalleryViewModel by activityViewModels()
     private lateinit var adapter : GalleryViewAdapter
@@ -39,6 +50,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     lateinit var fab: FloatingActionButton
     lateinit var fab1: FloatingActionButton
     lateinit var fab2: FloatingActionButton
+    lateinit var currentPhotoPath: String
     var isFabOpen = false
 
     private lateinit var profileId: String
@@ -148,6 +160,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             /*
             *   Load device camera
             */
+            uploadFromCamera()
             dialog.dismiss()
         }
         dialog.show()
@@ -180,4 +193,63 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         return file
     }
 
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File = context?.cacheDir!!
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
+    }
+
+    private fun uploadFromCamera() {
+        Log.d("newImage", ">>getNewImage")
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also{ takePictureIntent ->
+            takePictureIntent.resolveActivity(requireContext().packageManager)?.also{
+                val photoFile: File? = try{
+                    createImageFile()
+                } catch (e: IOException) {
+                    null
+                }
+                Log.d("newImage", photoFile.toString())
+                photoFile?.also{
+                    try{
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            "com.example.madcampweek2.fileprovider",
+                            it
+                        )
+                        Log.d("newImage", photoURI.toString())
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                        Log.d("newImage", "successful")
+                    }catch(e: Exception) {
+                        Log.d("newImage", e.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            REQUEST_IMAGE_CAPTURE -> {
+                if(resultCode == Activity.RESULT_OK){
+                    // Successfully got image from camera app!
+                    // Now add file to the server.
+                    Log.i("newImage", "OK")
+                    galleryViewModel.addImage(File(currentPhotoPath))
+                }else {
+                    File(currentPhotoPath).delete()
+                    Log.i("newImage", "Not OK")
+                }
+            }
+        }
+    }
 }

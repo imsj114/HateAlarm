@@ -13,6 +13,7 @@ import com.example.madcampweek2.model.User;
 import com.facebook.Profile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -56,22 +57,26 @@ public class GalleryViewModel extends ViewModel {
     // This method is using Retrofit to get the Images list of the given Uid user
     // @GET getUserImages(:uid)
     private void loadImages(String uid) {
-        Call<List<Image>> call = retroApi.getUserImages(uid);
+        Call<List<String>> call = retroApi.getUserImages(uid);
 
-        call.enqueue(new Callback<List<Image>>() {
+        call.enqueue(new Callback<List<String>>() {
             @Override
-            public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 if(response.isSuccessful()){
-                    List<Image> result = response.body();
+                    List<String> result = response.body();
                     Log.d(TAG, "ViewModel getUserImages Succeess uid: " + uid);
-                    _Images.setValue(result);
+                    List<Image> list = new ArrayList<Image>();
+                    for(String url : result){
+                        list.add(new Image(url));
+                    }
+                    _Images.setValue(list);
                 } else{
                     Log.d(TAG, "ViewModel getUserImages Fail");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Image>> call, Throwable t) {
+            public void onFailure(Call<List<String>> call, Throwable t) {
                 Log.d(TAG, "ViewModel getUserImages Fail:" + t.getMessage());
             }
         });

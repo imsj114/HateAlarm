@@ -43,10 +43,7 @@ public interface RetroApi {
 
     // Get : load user's images via uid
     @GET("api/images/{uid}")
-    Call<List<Image>> getUserImages(@Path("uid") String uid);
-
-
-
+    Call<List<String>> getUserImages(@Path("uid") String uid);
 
 
 }
