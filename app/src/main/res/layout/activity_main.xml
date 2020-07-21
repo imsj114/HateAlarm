@@ -60,6 +60,18 @@
                 android:textSize="30dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/amon"/>
+
+            <TextView
+                android:id="@+id/dumy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="copyright by\n임성재 조민규 홍은지"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="20dp"
+                android:textSize="15dp"
+                android:fontFamily="@font/amon"/>
+
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/user_logout"
                 android:layout_width="160dp"

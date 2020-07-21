@@ -160,6 +160,7 @@ public class GalleryViewModel extends ViewModel {
                     loadImages(profileId);
                 } else{
                     Log.d(TAG, "ViewModel addImage Fail");
+                    loadImages(profileId);
                 }
             }
 

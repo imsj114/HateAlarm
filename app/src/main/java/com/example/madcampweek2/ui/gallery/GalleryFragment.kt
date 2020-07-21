@@ -101,6 +101,9 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             Observer<List<Image?>?> { _images ->
                 (recyclerView.adapter as GalleryViewAdapter).setData(_images as List<Image>)
             })
+        profileId = Profile.getCurrentProfile().id
+        galleryViewModel.setProfileId(profileId)
+        galleryViewModel.ReloadImages(profileId)
     }
 
     // Fab open/close switch
@@ -127,8 +130,6 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             R.id.fab_gal -> switchFab()
             R.id.fab_gal1 -> {
                 switchFab()
-                profileId = Profile.getCurrentProfile().id
-                galleryViewModel.setProfileId(profileId)
                 galleryViewModel.ReloadImages(profileId)
                 Toast.makeText(requireContext(), "Reload Images", Toast.LENGTH_SHORT)
             }

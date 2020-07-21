@@ -45,7 +45,7 @@ class UserListFragment : Fragment() {
         recyclerView = view.findViewById(R.id.user_list)
         recyclerView.apply{
             layoutManager = LinearLayoutManager(context)
-            adapter = UserListViewAdapter(context, model._users_blacklist.value!!)
+            adapter = UserListViewAdapter(context, model._users_blacklist.value ?: listOf())
         }
 
         model.getBlacklist().observe(viewLifecycleOwner, Observer {

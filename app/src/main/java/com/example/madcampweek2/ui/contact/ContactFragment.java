@@ -24,6 +24,7 @@ import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.model.User;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -114,6 +115,30 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 adapter.notifyDataSetChanged();
             }
         });
+
+        if (Profile.getCurrentProfile() == null) {
+            ProfileTracker mProfileTracker = null;
+            mProfileTracker = new ProfileTracker() {
+                @Override
+                protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                    Log.d("facebook - profile", currentProfile.getFirstName());
+                    this.stopTracking();
+                    // TODO
+                    profileId = Profile.getCurrentProfile().getId();
+                    contactViewModel.setProfileId(profileId);
+                    contactViewModel.ReloadContacts(profileId);
+                }
+            };
+            // no need to call startTracking() on mProfileTracker
+            // because it is called by its constructor, internally.
+        } else {
+            Profile profile = Profile.getCurrentProfile();
+            Log.v("facebook - profile", profile.getFirstName());
+            // TODO
+            profileId = Profile.getCurrentProfile().getId();
+            contactViewModel.setProfileId(profileId);
+            contactViewModel.ReloadContacts(profileId);
+        }
     }
 
     @Override
@@ -125,7 +150,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             case R.id.fab_sub1:
                 switchFab();
                 Toast.makeText(getActivity(), "Relaod your contacts", Toast.LENGTH_SHORT).show();
-                profileId = Profile.getCurrentProfile().getId();
                 contactViewModel.setProfileId(profileId);
                 contactViewModel.ReloadContacts(profileId);
                 break;
@@ -133,6 +157,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 switchFab();
                 Toast.makeText(getActivity(), "Add contact", Toast.LENGTH_SHORT).show();
                 FabaddContact();
+                contactViewModel.ReloadContacts(profileId);
                 break;
         }
     }
