@@ -1,13 +1,18 @@
 package com.example.madcampweek2.ui.gallery
 
 import android.app.Activity
+import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +21,8 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -27,13 +32,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.madcampweek2.R
-import com.example.madcampweek2.model.Contact
 import com.example.madcampweek2.model.Image
-import com.facebook.FacebookSdk
 import com.facebook.Profile
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +43,7 @@ import java.util.*
 class GalleryFragment : Fragment(), View.OnClickListener {
 
     private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_PICK_IMAGE = 2
     private lateinit var recyclerView : RecyclerView
     private val galleryViewModel : GalleryViewModel by activityViewModels()
     private lateinit var adapter : GalleryViewAdapter
@@ -154,6 +157,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             /*
             *   Load device gallery
             */
+            uploadFromFile()
             dialog.dismiss()
         }
         fromcamera.setOnClickListener {
@@ -236,6 +240,15 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun uploadFromFile() {
+        val getIntent = Intent(Intent.ACTION_GET_CONTENT).setType("image/*")
+        val pickIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val chooserIntent = Intent.createChooser(getIntent, "Select Image").putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf<Intent>(pickIntent))
+        startActivityForResult(Intent.createChooser(chooserIntent, "Select Picture"), REQUEST_PICK_IMAGE)
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
@@ -250,6 +263,130 @@ class GalleryFragment : Fragment(), View.OnClickListener {
                     Log.i("newImage", "Not OK")
                 }
             }
+            REQUEST_PICK_IMAGE -> {
+                if(resultCode == Activity.RESULT_OK){
+                    //Log.i("newImage", "OK")
+                    val uri = data!!.data!!
+                    Log.i("newImage", uri.toString())
+                    val file = File(getPath(requireContext(), uri)!!)
+                    galleryViewModel.addImage(file)
+                    Log.i("newImage", "OK")
+                }
+            }
         }
+    }
+
+    private fun copyInputStreamToFile(inputStream: InputStream, file: File) {
+        try{
+            val outputStream = FileOutputStream(file)
+            var read: Int
+            val bytes = byteArrayOf()
+            while ( inputStream.read(bytes).also { read = it } != -1) {
+                outputStream.write(bytes, 0, read)
+            }
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    fun getPath(context: Context?, uri: Uri): String? {
+        val isKitKat: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                val docId: String = DocumentsContract.getDocumentId(uri)
+                val split = docId.split(":".toRegex()).toTypedArray()
+                val type = split[0]
+                if ("primary".equals(type, ignoreCase = true)) {
+                    return Environment.getExternalStorageDirectory()
+                        .toString() + "/" + split[1]
+                }
+
+                // TODO handle non-primary volumes
+            } else if (isDownloadsDocument(uri)) {
+                val id: String = DocumentsContract.getDocumentId(uri)
+                val contentUri: Uri = ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"),
+                    java.lang.Long.valueOf(id)
+                )
+                return getDataColumn(requireContext(), contentUri, null, null)
+            } else if (isMediaDocument(uri)) {
+                val docId: String = DocumentsContract.getDocumentId(uri)
+                val split = docId.split(":".toRegex()).toTypedArray()
+                val type = split[0]
+                var contentUri: Uri? = null
+                if ("image" == type) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                } else if ("video" == type) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                } else if ("audio" == type) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+                val selection = "_id=?"
+                val selectionArgs: Array<String?> = arrayOf(
+                    split[1]
+                )
+                return getDataColumn(requireContext(), contentUri, selection, selectionArgs)
+            }
+        } else if ("content".equals(uri.scheme, ignoreCase = true)) {
+            return getDataColumn(requireContext(), uri, null, null)
+        } else if ("file".equals(uri.scheme, ignoreCase = true)) {
+            return uri.path
+        }
+        return null
+    }
+
+    fun getDataColumn(
+        context: Context, uri: Uri?, selection: String?,
+        selectionArgs: Array<String?>?
+    ): String? {
+        var cursor: Cursor? = null
+        val column = "_data"
+        val projection = arrayOf(
+            column
+        )
+        try {
+            cursor = uri?.let {
+                context.getContentResolver().query(
+                    it, projection, selection, selectionArgs,
+                    null
+                )
+            }
+            if (cursor != null && cursor.moveToFirst()) {
+                val column_index: Int = cursor.getColumnIndexOrThrow(column)
+                return cursor.getString(column_index)
+            }
+        } finally {
+            if (cursor != null) cursor.close()
+        }
+        return null
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    fun isExternalStorageDocument(uri: Uri): Boolean {
+        return "com.android.externalstorage.documents" == uri.authority
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    fun isDownloadsDocument(uri: Uri): Boolean {
+        return "com.android.providers.downloads.documents" == uri.authority
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    fun isMediaDocument(uri: Uri): Boolean {
+        return "com.android.providers.media.documents" == uri.authority
     }
 }
