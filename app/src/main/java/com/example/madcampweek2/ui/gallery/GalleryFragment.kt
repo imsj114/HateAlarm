@@ -115,54 +115,43 @@ class GalleryFragment : Fragment(), View.OnClickListener {
                 profileId = Profile.getCurrentProfile().id
                 galleryViewModel.setProfileId(profileId)
                 galleryViewModel.ReloadImages(profileId)
+                Toast.makeText(requireContext(), "Reload Images", Toast.LENGTH_SHORT)
             }
             R.id.fab_gal2 -> {
                 switchFab()
-
+                uploadDialog()
+                Toast.makeText(requireContext(), "Upload Image", Toast.LENGTH_SHORT)
             }
         }
     }
 
-//    fun FabaddContact() {
-//        val builder =
-//            AlertDialog.Builder(activity!!)
-//        val inflater = layoutInflater
-//        val view = inflater.inflate(R.layout.dialog_add_contact, null)
-//        builder.setView(view)
-//
-//        val fromgallery =
-//            view.findViewById<View>(R.id.buttonSubmit) as Button
-//        val cancel =
-//            view.findViewById<View>(R.id.buttonCancel) as Button
-//        val editTextName =
-//            view.findViewById<View>(R.id.editTextAddName) as EditText
-//        val editTextPhone =
-//            view.findViewById<View>(R.id.editTextAddPhone) as EditText
-//        val dialog = builder.create()
-//        cancel.setOnClickListener { dialog.cancel() }
-//        submit.setOnClickListener {
-//            val strName = editTextName.text.toString()
-//            val strPhone = editTextPhone.text.toString()
-//            if (strName == "" || strPhone == "") {
-//                Toast.makeText(
-//                    FacebookSdk.getApplicationContext()
-//                    , "Type infomation for new contact", Toast.LENGTH_SHORT
-//                ).show()
-//            } else {
-//                val new_contact = Contact()
-//                new_contact.name = strName
-//                new_contact.phoneNumber = strPhone
-//                contactViewModel.addContact(new_contact)
-//                Toast.makeText(
-//                    FacebookSdk.getApplicationContext()
-//                    , "Name: $strName\nPhonenumber: $strPhone"
-//                    , Toast.LENGTH_LONG
-//                ).show()
-//                dialog.dismiss()
-//            }
-//        }
-//        dialog.show()
-//    }
+    fun uploadDialog() {
+        val builder =
+            AlertDialog.Builder(activity!!)
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.dialog_imageselect, null)
+        builder.setView(view)
+
+        val fromgallery =
+            view.findViewById<View>(R.id.fromgallery) as Button
+        val fromcamera =
+            view.findViewById<View>(R.id.fromcamera) as Button
+
+        val dialog = builder.create()
+        fromgallery.setOnClickListener {
+            /*
+            *   Load device gallery
+            */
+            dialog.dismiss()
+        }
+        fromcamera.setOnClickListener {
+            /*
+            *   Load device camera
+            */
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
 
     fun getDrawableFile(draw: Drawable) :File {
         //val drawable = resources.getDrawable(R.drawable.jordy, null)
