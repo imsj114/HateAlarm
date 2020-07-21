@@ -21,5 +21,15 @@
         android:id="@+id/navigation_map"
         android:name="com.example.madcampweek2.ui.maps.MapsFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_maps"/>
+        tools:layout="@layout/fragment_maps">
+        <action
+            android:id="@+id/action_navigation_map_to_navigation_user_list"
+            app:destination="@id/navigation_user_list" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_user_list"
+        android:name="com.example.madcampweek2.ui.maps.list.UserListFragment"
+        android:label="UserList"
+        tools:layout="@layout/fragment_userlist" />
 </navigation>

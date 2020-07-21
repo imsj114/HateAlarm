@@ -48,7 +48,8 @@
             android:foregroundServiceType="location">
         </service>
         <service
-            android:name=".ui.maps.SocketService">
+            android:name=".ui.maps.SocketService"
+            android:foregroundServiceType="location">
         </service>
 
         <activity

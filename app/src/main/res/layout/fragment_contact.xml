@@ -25,7 +25,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="16dp"
         android:backgroundTint="#ffffff"
-        android:src="@drawable/ic_baseline_import_contacts_24"
+        android:src="@drawable/ic_baseline_autorenew_24"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:fabSize="normal" />
@@ -39,7 +39,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="16dp"
         android:backgroundTint="#ffffff"
-        android:src="@drawable/ic_baseline_data_usage_24"
+        android:src="@drawable/ic_baseline_create_24"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:fabSize="normal" />

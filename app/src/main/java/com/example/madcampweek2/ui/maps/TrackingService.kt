@@ -41,7 +41,7 @@ class TrackingService : Service() {
                 //The last location in the list is the newest
                 val location = locationList.last()
                 Log.i(TAG, "Location: " + location.getLatitude() + " " + location.getLongitude())
-                Toast.makeText(applicationContext, "Location: " + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG).show()
+                //Toast.makeText(applicationContext, "Location: " + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_LONG).show()
                 mLastLocation = location
             }
             // Broadcast mLastLocation to MapsViewModel and SocketService

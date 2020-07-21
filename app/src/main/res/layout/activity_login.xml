@@ -16,7 +16,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.45"/>
+        app:layout_constraintVertical_bias="0.45"
+        android:fontFamily="@font/amon"/>
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
@@ -27,6 +28,7 @@
         android:gravity="center_horizontal"
         app:layout_constraintTop_toBottomOf="@id/login_text"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        android:fontFamily="@font/amon"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
