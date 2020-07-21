@@ -19,7 +19,7 @@
         android:layout_above="@+id/fab_map2"
         android:backgroundTint="#ffffff"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_baseline_import_contacts_24"
+        android:src="@drawable/ic_baseline_location_on_24"
         android:visibility="invisible"
         app:borderWidth="0dp"
         app:fabSize="normal"
@@ -33,7 +33,7 @@
         android:layout_above="@+id/fab_map"
         android:layout_margin="16dp"
         android:backgroundTint="#ffffff"
-        android:src="@drawable/ic_baseline_data_usage_24"
+        android:src="@drawable/ic_baseline_list_24"
         android:visibility="invisible"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/fab_map"
@@ -57,6 +57,7 @@
         android:layout_height="30dp"
         app:layout_constraintStart_toStartOf="@+id/map"
         app:layout_constraintTop_toTopOf="@+id/map"
-        android:layout_margin="30dp"/>
+        android:layout_margin="30dp"
+        android:fontFamily="@font/amon"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

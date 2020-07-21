@@ -13,7 +13,8 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:textSize="28sp"
-        android:text="@string/dialog_addcontact_title" />
+        android:text="@string/dialog_addcontact_title"
+        android:fontFamily="@font/amon"/>
 
     <TextView
         android:id="@+id/textViewAddName"
@@ -21,14 +22,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textViewAddContact"
         android:text="@string/dialog_addcontact_name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:fontFamily="@font/amon"/>
 
     <EditText
         android:id="@+id/editTextAddName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_below="@+id/textViewAddName">
+        android:layout_below="@+id/textViewAddName"
+        android:fontFamily="@font/amon">
     </EditText>
 
     <TextView
@@ -37,14 +40,16 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_addcontact_phone"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/editTextAddName" />
+        android:layout_below="@+id/editTextAddName"
+        android:fontFamily="@font/amon"/>
 
     <EditText
         android:id="@+id/editTextAddPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_below="@+id/textViewAddPhone" />
+        android:layout_below="@+id/textViewAddPhone"
+        android:fontFamily="@font/amon"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,14 +62,16 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/buttonSubmit"
         android:layout_weight="1"
-        android:text="@string/button_cancel" />
+        android:text="@string/button_cancel"
+        android:fontFamily="@font/amon"/>
     <Button
         android:id="@+id/buttonSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/buttonCancel"
         android:layout_weight="1"
-        android:text="@string/button_submit" />
+        android:text="@string/button_submit"
+        android:fontFamily="@font/amon"/>
     </LinearLayout>
 
 </RelativeLayout>

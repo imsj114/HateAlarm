@@ -39,6 +39,7 @@ public class MainActivity : AppCompatActivity(){
 
         val logout_button = findViewById<Button>(R.id.user_logout)
         logout_button.setOnClickListener{
+            com.facebook.login.LoginManager.getInstance().logOut();
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 

@@ -96,7 +96,7 @@ class MapsFragment : Fragment() , View.OnClickListener{
                     val r= it.getDistanceFrom(myLastLocation!!)
                     if( r < ALERT_RADIUS) {
                         Snackbar.make(activity?.findViewById(R.id.nav_host_fragment)!!, "ALERT!! distance: $r", Snackbar.LENGTH_SHORT).show()
-                        mediaPlayer = MediaPlayer.create(activity, R.raw.siren)
+                        mediaPlayer = MediaPlayer.create(activity, R.raw.siren0)
                         mediaPlayer!!.start()
                     }
                 }
