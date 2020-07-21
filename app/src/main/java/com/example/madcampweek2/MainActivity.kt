@@ -4,11 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.*
-import androidx.activity.viewModels
-//import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -17,11 +13,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.madcampweek2.ui.MainViewModel
-import com.example.madcampweek2.model.Contact
 import com.facebook.Profile
 import com.bumptech.glide.Glide
-import com.example.madcampweek2.model.Image
 import com.example.madcampweek2.ui.LoginActivity
 import com.facebook.ProfileTracker
 
@@ -29,12 +22,10 @@ import com.facebook.ProfileTracker
 public class MainActivity : AppCompatActivity(){
 
     private val READ_CONTACTS_PERMISSON = 1
-    val viewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
@@ -48,6 +39,7 @@ public class MainActivity : AppCompatActivity(){
 
         val logout_button = findViewById<Button>(R.id.user_logout)
         logout_button.setOnClickListener{
+            com.facebook.login.LoginManager.getInstance().logOut();
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
         }
 
@@ -124,4 +116,5 @@ public class MainActivity : AppCompatActivity(){
             }
         }
     }
+
 }
