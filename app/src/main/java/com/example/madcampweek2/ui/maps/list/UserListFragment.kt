@@ -16,7 +16,6 @@ import com.example.madcampweek2.R
 import com.example.madcampweek2.model.MapUser
 import com.example.madcampweek2.ui.gallery.GalleryViewAdapter
 import com.example.madcampweek2.ui.gallery.SpacesItemDecoration
-import com.example.madcampweek2.ui.maps.ALERT_RADIUS
 import com.example.madcampweek2.ui.maps.MapsViewModel
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar

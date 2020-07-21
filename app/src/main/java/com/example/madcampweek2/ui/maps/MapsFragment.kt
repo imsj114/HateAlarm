@@ -1,7 +1,9 @@
 package com.example.madcampweek2.ui.maps
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ComponentName
+import android.content.DialogInterface
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -9,12 +11,12 @@ import android.location.Location
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
+import android.text.InputType
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -38,12 +40,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 
-const val ALERT_RADIUS = 5.0
-
 class MapsFragment : Fragment() , View.OnClickListener{
     private val TAG = "TAG_Map"
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     private val DEFAULT_ZOOM: Float = 16.0F
+    private var ALERT_RADIUS = 5.0
     val placesClient = lazy {
         Places.initialize(requireContext(), getString(R.string.google_maps_key))
         Places.createClient(requireContext())
@@ -120,7 +121,10 @@ class MapsFragment : Fragment() , View.OnClickListener{
         })
     }
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -293,58 +297,27 @@ class MapsFragment : Fragment() , View.OnClickListener{
             }()
     }
 
-//    private fun getDeviceLocation() {
-//        /*
-//     * Get the best and most recent location of the device, which may be null in rare
-//     * cases when a location is not available.
-//     */
-//        try {
-//            if (mLocationPermissionGranted) {
-//                val locationResult = mFusedLocationProviderClient.lastLocation
-//                locationResult.addOnCompleteListener(requireActivity()
-//                ) { task ->
-//                    if (task.isSuccessful()) {
-//                        // Set the map's camera position to the current location of the device.
-//                        mLastKnownLocation = task.getResult()
-//                        mMap!!.moveCamera(
-//                            CameraUpdateFactory.newLatLngZoom(
-//                                LatLng(
-//                                    mLastKnownLocation!!.latitude,
-//                                    mLastKnownLocation!!.longitude
-//                                ), DEFAULT_ZOOM
-//                            )
-//                        )
-//                    } else {
-//                        Log.d(TAG, "Current location is null. Using defaults.")
-//                        Log.e(TAG, "Exception: %s", task.getException())
-//                        mMap!!.moveCamera(
-//                            CameraUpdateFactory.newLatLngZoom(
-//                                mDefaultLocation,
-//                                DEFAULT_ZOOM
-//                            )
-//                        )
-//                        mMap!!.uiSettings.isMyLocationButtonEnabled = false
-//                    }
-//                }
-//            }
-//        } catch (e: SecurityException) {
-//            Log.e("Exception: %s", e.message!!)
-//        }
-//    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        inflater.inflate(R.menu.menu_main, menu)
+    }
 
-//    private fun isMyServiceRunning(
-//        serviceClass: Class<*>,
-//        context: Context
-//    ): Boolean {
-//        val manager =
-//            context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-//        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-//            if (serviceClass.name == service.service.className) {
-//                Log.i("Service already", "running")
-//                return true
-//            }
-//        }
-//        Log.i("Service not", "running")
-//        return false
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.settings -> {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("접근 반경 (단위: m)")
+                val input = EditText(requireContext())
+                input.inputType = InputType.TYPE_CLASS_NUMBER
+                builder.setView(input)
+                builder.setPositiveButton("확인") { p0, p1 ->
+                    ALERT_RADIUS = input.text.toString().toDoubleOrNull() ?: 5.0
+                    Log.i(TAG, ">>> $ALERT_RADIUS")
+                }
+                builder.setNegativeButton("취소") { p0, p1 -> p0?.cancel() }
+                builder.show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

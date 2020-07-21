@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.madcampweek2.R
@@ -27,6 +28,14 @@ class UserListViewAdapter(val context: Context, val userList: List<MapUser>) : R
                 .into(imageView)
             nameTextView.text = user.name
             blockedTextView.text = if(user.blocked) "손절" else "아직 친구"
+            if(user.blocked){
+                nameTextView.setTextColor(ContextCompat.getColor(context, R.color.red))
+                blockedTextView.setTextColor(ContextCompat.getColor(context, R.color.red))
+            }
+            else {
+                nameTextView.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                blockedTextView.setTextColor(ContextCompat.getColor(context, R.color.gray))
+            }
             deleteImageView.setImageResource(if(user.blocked) R.drawable.ic_baseline_add_circle_24 else R.drawable.ic_baseline_remove_circle_24)
         }
     }
