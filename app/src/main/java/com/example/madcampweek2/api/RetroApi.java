@@ -1,7 +1,6 @@
 package com.example.madcampweek2.api;
 
 import com.example.madcampweek2.model.Contact;
-import com.example.madcampweek2.model.Image;
 import com.example.madcampweek2.model.User;
 
 import java.io.File;
@@ -52,7 +51,7 @@ public interface RetroApi {
 
     // Get : delete an image via user id and filename
     // image file on the server is deleted and unlinked from user's image list
-    @GET("api/images/{uid}/{filename}")
+    @GET("api/images/delete/{uid}/{filename}")
     Call<String> deleteImage(@Path("uid") String uid, @Path("filename") String filename);
 
 }
