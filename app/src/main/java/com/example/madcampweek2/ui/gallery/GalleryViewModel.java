@@ -1,4 +1,5 @@
-package com.example.madcampweek2.ui.contact;
+package com.example.madcampweek2.ui.gallery;
+
 
 import android.util.Log;
 
@@ -7,23 +8,27 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.madcampweek2.api.RetroApi;
-import com.example.madcampweek2.model.Contact;
+import com.example.madcampweek2.model.Image;
 import com.example.madcampweek2.model.User;
+import com.facebook.Profile;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.content.ContentValues.TAG;
-
-public class ContactViewModel extends ViewModel {
+public class GalleryViewModel extends ViewModel {
 
     private String BASE_URL = "http://192.249.19.240:3080/";
     private String profileId;
+    private String TAG = "TAG";
 
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -33,43 +38,41 @@ public class ContactViewModel extends ViewModel {
     private RetroApi retroApi = retrofit.create(RetroApi.class);
 
 
-    public void setPid(String pid){this.profileId = pid;}
-
     //this is the data that we will fetch asynchronously
-    private MutableLiveData<List<Contact>> _contacts;
+    private MutableLiveData<List<Image>> _Images;
 
     //we will call this method to get the data
-    public LiveData<List<Contact>> getContacts() {
+    public LiveData<List<Image>> getImages() {
         //if the list is null
-        if (_contacts == null) {
-            _contacts = new MutableLiveData<List<Contact>>();
+            if (_Images == null) {
+            _Images = new MutableLiveData<List<Image>>();
             //we will load it asynchronously from server in this method
-            loadContacts(profileId);
+            loadImages(profileId);
         }
         //finally we will return the list
-        return _contacts;
+        return _Images;
     }
 
-    // This method is using Retrofit to get the Contacts list of the given Uid user
-    // @GET getUserContacts(:uid)
-    private void loadContacts(String uid) {
-        Call<List<Contact>> call = retroApi.getUserContacts(uid);
+    // This method is using Retrofit to get the Images list of the given Uid user
+    // @GET getUserImages(:uid)
+    private void loadImages(String uid) {
+        Call<List<Image>> call = retroApi.getUserImages(uid);
 
-        call.enqueue(new Callback<List<Contact>>() {
+        call.enqueue(new Callback<List<Image>>() {
             @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+            public void onResponse(Call<List<Image>> call, Response<List<Image>> response) {
                 if(response.isSuccessful()){
-                    List<Contact> result = response.body();
-                    Log.d(TAG, "ViewModel getUserContacts Succeess uid: " + uid);
-                    _contacts.setValue(result);
+                    List<Image> result = response.body();
+                    Log.d(TAG, "ViewModel getUserImages Succeess uid: " + uid);
+                    _Images.setValue(result);
                 } else{
-                    Log.d(TAG, "ViewModel getUserContacts Fail");
+                    Log.d(TAG, "ViewModel getUserImages Fail");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
-                Log.d(TAG, "ViewModel getUserContacts Fail:" + t.getMessage());
+            public void onFailure(Call<List<Image>> call, Throwable t) {
+                Log.d(TAG, "ViewModel getUserImages Fail:" + t.getMessage());
             }
         });
     }
@@ -86,7 +89,7 @@ public class ContactViewModel extends ViewModel {
                 } else{
                     String result = response.body();
                     Log.d(TAG, "ViewModel login Fail: " + result);
-                    registerToServer(uid);
+                    registerToServer();
                 }
             }
 
@@ -97,9 +100,9 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
-    private void registerToServer(String uid){
+    private void registerToServer(){
         User new_user = new User();
-        new_user.setUid(uid);
+        new_user.setUid(profileId);
 
         Call<User> call = retroApi.registerUser(new_user);
 
@@ -111,6 +114,7 @@ public class ContactViewModel extends ViewModel {
                     Log.d(TAG, "ViewModel register Succeess: " + result.toString());
                 } else{
                     Log.d(TAG, "ViewModel register Fail");
+                    registerToServer();
                 }
             }
 
@@ -121,33 +125,46 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
-    public void ReloadContacts(String uid){
+    public void ReloadImages(String uid){
         loginToServer(uid);
-        loadContacts(uid);
+        loadImages(uid);
     }
 
-    public void addContact(Contact contact){
-        Call<Contact> call = retroApi.addContact(profileId, contact);
 
-        call.enqueue(new Callback<Contact>() {
+    public void addImage(File file){
+
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+//        // add another part within the multipart request
+//        RequestBody fullName =
+//                RequestBody.create(MediaType.parse("multipart/form-data"), "Your Name");
+
+        Call<String> call = retroApi.addImage(Profile.getCurrentProfile().getId(), body);
+
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<Contact> call, Response<Contact> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()){
-                    Contact result = response.body();
-                    Log.d(TAG, "ViewModel addContact Succeess: " + result.toString());
-                    loadContacts(profileId);
+                    String result = response.body();
+                    Log.d(TAG, "ViewModel addImage Succeess: " + result);
+                    loadImages(profileId);
                 } else{
-                    Log.d(TAG, "ViewModel addContact Fail");
+                    Log.d(TAG, "ViewModel addImage Fail");
                 }
             }
 
             @Override
-            public void onFailure(Call<Contact> call, Throwable t) {
-                Log.d(TAG, "ViewModel addContact Fail:" + t.getMessage());
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "ViewModel addImage Fail:" + t.getMessage());
             }
         });
     }
 
-    public void setProfileId(String uid) { this.profileId = uid;}
+    public void setProfileId(String uid) { this.profileId = uid; }
 
 }

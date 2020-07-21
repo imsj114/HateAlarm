@@ -93,12 +93,12 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
          */
 
         // test용~
-        Contact con1 = new Contact();
-        con1.setName("only");
-        con1.setPhoneNumber("102013123");
-
-        adapter.addItem(con1);
-        adapter.notifyDataSetChanged();
+//        Contact con1 = new Contact();
+//        con1.setName("only");
+//        con1.setPhoneNumber("102013123");
+//
+//        adapter.addItem(con1);
+//        adapter.notifyDataSetChanged();
 
         return root;
     }
@@ -126,7 +126,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 switchFab();
                 Toast.makeText(getActivity(), "Relaod your contacts", Toast.LENGTH_SHORT).show();
                 profileId = Profile.getCurrentProfile().getId();
-                contactViewModel.setPid(profileId);
+                contactViewModel.setProfileId(profileId);
                 contactViewModel.ReloadContacts(profileId);
                 break;
             case R.id.fab_sub2:

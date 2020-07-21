@@ -17,4 +17,7 @@
     <string name="dialog_addcontact_phone">Phonenumber</string>
     <string name="button_submit">Submit</string>
     <string name="button_cancel">Cancel</string>
+    <string name="dialog_imagetitle">Upload Image from</string>
+    <string name="from_gallery">Gallery</string>
+    <string name="from_camera">Camera</string>
 </resources>
