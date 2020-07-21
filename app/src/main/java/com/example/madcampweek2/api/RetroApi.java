@@ -4,6 +4,7 @@ import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.model.Image;
 import com.example.madcampweek2.model.User;
 
+import java.io.File;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -43,7 +44,15 @@ public interface RetroApi {
 
     // Get : load user's images via uid
     @GET("api/images/{uid}")
-    Call<List<String>> getUserImages(@Path("uid") String uid);
+    Call<List<Image>> getUserImages(@Path("uid") String uid);
 
+    // Get : load an image file via filename
+    @GET("api/images/get/{filename}")
+    Call<File> getImage(@Path("filename") String filename);
+
+    // Get : delete an image via user id and filename
+    // image file on the server is deleted and unlinked from user's image list
+    @GET("api/images/{uid}/{filename}")
+    Call<String> deleteImage(@Path("uid") String uid, @Path("filename") String filename);
 
 }
