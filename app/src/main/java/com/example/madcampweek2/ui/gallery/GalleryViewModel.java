@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GalleryViewModel extends ViewModel {
 
-    private String BASE_URL = "http://192.249.19.243:880/";
+    private String BASE_URL = "http://192.249.19.240:3080/";
     private String profileId;
     private String TAG = "TAG";
 
