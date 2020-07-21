@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import com.example.madcampweek2.api.RetroApi;
 import com.example.madcampweek2.model.Contact;
 import com.example.madcampweek2.model.User;
-import com.facebook.Profile;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import static android.content.ContentValues.TAG;
 public class ContactViewModel extends ViewModel {
 
     private String BASE_URL = "http://192.249.19.240:3080/";
-    private String profileId = Profile.getCurrentProfile().getId();
+    private String profileId;
 
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -85,7 +84,7 @@ public class ContactViewModel extends ViewModel {
                 } else{
                     String result = response.body();
                     Log.d(TAG, "ViewModel login Fail: " + result);
-                    registerToServer();
+                    registerToServer(uid);
                 }
             }
 
@@ -96,9 +95,9 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
-    private void registerToServer(){
+    private void registerToServer(String uid){
         User new_user = new User();
-        new_user.setUid(profileId);
+        new_user.setUid(uid);
 
         Call<User> call = retroApi.registerUser(new_user);
 
@@ -110,7 +109,6 @@ public class ContactViewModel extends ViewModel {
                     Log.d(TAG, "ViewModel register Succeess: " + result.toString());
                 } else{
                     Log.d(TAG, "ViewModel register Fail");
-                    registerToServer();
                 }
             }
 
@@ -147,5 +145,7 @@ public class ContactViewModel extends ViewModel {
             }
         });
     }
+
+    public void setProfileId(String uid) { this.profileId = uid;}
 
 }

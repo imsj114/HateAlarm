@@ -3,16 +3,16 @@ package com.example.madcampweek2.ui.gallery
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -22,15 +22,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.madcampweek2.R
 import com.example.madcampweek2.model.Contact
 import com.example.madcampweek2.model.Image
-import com.example.madcampweek2.ui.contact.ContactViewModel
-import com.example.madcampweek2.ui.maps.SocketService.Companion.TAG
+import com.facebook.FacebookSdk
+import com.facebook.Profile
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.*
 
 
 class GalleryFragment : Fragment(), View.OnClickListener {
+
     private lateinit var recyclerView : RecyclerView
-    private lateinit var images : MutableList<Image>
     private val galleryViewModel : GalleryViewModel by activityViewModels()
     private lateinit var adapter : GalleryViewAdapter
 
@@ -40,6 +40,8 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     lateinit var fab1: FloatingActionButton
     lateinit var fab2: FloatingActionButton
     var isFabOpen = false
+
+    private lateinit var profileId: String
 
     override fun onCreateView(inflater: LayoutInflater
                               , container: ViewGroup?
@@ -82,7 +84,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         galleryViewModel.getImages().observe(
             viewLifecycleOwner,
             Observer<List<Image?>?> { _images ->
-                adapter.setData(_images as List<Image>)
+                (recyclerView.adapter as GalleryViewAdapter).setData(_images as List<Image>)
             })
     }
 
@@ -110,14 +112,57 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             R.id.fab_gal -> switchFab()
             R.id.fab_gal1 -> {
                 switchFab()
-                Toast.makeText(activity, "fab1", Toast.LENGTH_SHORT)
+                profileId = Profile.getCurrentProfile().id
+                galleryViewModel.setProfileId(profileId)
+                galleryViewModel.ReloadImages(profileId)
             }
             R.id.fab_gal2 -> {
                 switchFab()
-                Toast.makeText(activity, "fab2", Toast.LENGTH_SHORT)
+
             }
         }
     }
+
+//    fun FabaddContact() {
+//        val builder =
+//            AlertDialog.Builder(activity!!)
+//        val inflater = layoutInflater
+//        val view = inflater.inflate(R.layout.dialog_add_contact, null)
+//        builder.setView(view)
+//
+//        val fromgallery =
+//            view.findViewById<View>(R.id.buttonSubmit) as Button
+//        val cancel =
+//            view.findViewById<View>(R.id.buttonCancel) as Button
+//        val editTextName =
+//            view.findViewById<View>(R.id.editTextAddName) as EditText
+//        val editTextPhone =
+//            view.findViewById<View>(R.id.editTextAddPhone) as EditText
+//        val dialog = builder.create()
+//        cancel.setOnClickListener { dialog.cancel() }
+//        submit.setOnClickListener {
+//            val strName = editTextName.text.toString()
+//            val strPhone = editTextPhone.text.toString()
+//            if (strName == "" || strPhone == "") {
+//                Toast.makeText(
+//                    FacebookSdk.getApplicationContext()
+//                    , "Type infomation for new contact", Toast.LENGTH_SHORT
+//                ).show()
+//            } else {
+//                val new_contact = Contact()
+//                new_contact.name = strName
+//                new_contact.phoneNumber = strPhone
+//                contactViewModel.addContact(new_contact)
+//                Toast.makeText(
+//                    FacebookSdk.getApplicationContext()
+//                    , "Name: $strName\nPhonenumber: $strPhone"
+//                    , Toast.LENGTH_LONG
+//                ).show()
+//                dialog.dismiss()
+//            }
+//        }
+//        dialog.show()
+//    }
 
     fun getDrawableFile(draw: Drawable) :File {
         //val drawable = resources.getDrawable(R.drawable.jordy, null)

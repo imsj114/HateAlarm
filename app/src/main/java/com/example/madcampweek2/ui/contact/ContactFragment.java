@@ -55,7 +55,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private ArrayList<Contact> jsonphoneBook, devicephoneBook;
 
     private String BASE_URL = "http://192.249.19.240:3080/";
-    private String profileId = Profile.getCurrentProfile().getId();
+    private String profileId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -93,12 +93,12 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
          */
 
         // test용~
-        Contact con1 = new Contact();
-        con1.setName("only");
-        con1.setPhoneNumber("102013123");
-
-        adapter.addItem(con1);
-        adapter.notifyDataSetChanged();
+//        Contact con1 = new Contact();
+//        con1.setName("only");
+//        con1.setPhoneNumber("102013123");
+//
+//        adapter.addItem(con1);
+//        adapter.notifyDataSetChanged();
 
         return root;
     }
@@ -125,6 +125,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             case R.id.fab_sub1:
                 switchFab();
                 Toast.makeText(getActivity(), "Relaod your contacts", Toast.LENGTH_SHORT).show();
+                profileId = Profile.getCurrentProfile().getId();
+                contactViewModel.setProfileId(profileId);
                 contactViewModel.ReloadContacts(profileId);
                 break;
             case R.id.fab_sub2:
