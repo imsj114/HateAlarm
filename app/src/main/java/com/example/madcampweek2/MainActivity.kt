@@ -41,6 +41,7 @@ public class MainActivity : AppCompatActivity(){
         logout_button.setOnClickListener{
             com.facebook.login.LoginManager.getInstance().logOut();
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            finish()
         }
 
         //getPermission(Manifest.permission.READ_CONTACTS, READ_CONTACTS_PERMISSON)
